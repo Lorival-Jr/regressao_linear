@@ -388,6 +388,7 @@ plot(dados$Temperatura, dados$Tempo,
 curve(modelo1$coefficients[1] + modelo1$coefficients[2]*x, add = T, col = 'red', lty = 1, lwd = 2)
 
 ```
+<br>
 Assim como visualizado no gráfico de dispersão inicial, os pontos formam uma espécie de reta, e o modelo consegue ajustar uma reta de regressão que passe pelo meio de todos pontos nos grupos de temperatura. <br><br>
 
 &emsp;&emsp;h) Construa intervalos de 95% de confiança para os parâmetros estimados;
@@ -415,7 +416,7 @@ Temos que com 95% de confiança, $\beta_0$ está entre 12.80965603 e 13.55748683
 | Total     | 8  | 1101.6 |         |         |       |
 </center>
 
-&emsp;&emsp;(a) Escreva a equação da reta ajustada;
+&emsp;&emsp; (a) Escreva a equação da reta ajustada;
 
 &emsp;&emsp; (b) Encontre um intervalo de confiança de 95%, para os coeficientes da reta ajusta;
 
@@ -430,3 +431,171 @@ Temos que com 95% de confiança, $\beta_0$ está entre 12.80965603 e 13.55748683
 A disponibilidade relativa é estimada pela razão entre o coeficiente linear de regressão (angular no caso da reta) obtido para o Fosfato de interesse e para o Fosfato Bicálcico, isto é:
 
 $$DR^* = \beta_1^* / \beta_1^{Bicalcico}$$
+<br>
+
+\begin{array}{cc|cc|cc}
+\hline
+\textrm{Araxa}  &&\textrm{Patos}&&\textrm{Bicalcico}&\\
+\hline
+\textrm{Y}      &\textrm{X}&\textrm{Y}&\textrm{X}&\textrm{Y}&\textrm{X}\\
+\hline
+                21.28&0.184&23.50&0.195&25&0.18\\
+                31.60&0.350&34.59&0.350&39&0.36\\
+                32.42&0.516&31.18&0.505&43&0.50\\
+                41.74&0.683&43.27&0.661&60&0.65\\
+                420.6&0.849&40.36&0.816&63&0.78\\
+                53.38&1.015&50.45&0.972&71&0.94\\
+\hline
+\end{array}
+
+&emsp;&emsp; (a) Ajuste os modelos individuais;
+
+```{r}
+araxa <- data.frame(Y = c(21.28,31.60,32.42,41.74,42.06,53.38),
+                    X = c(0.184,0.350,0.516,0.683,0.849,1.015))
+patos <- data.frame(Y = c(23.50,34.59,31.18,43.27,40.36,50.45),
+                    X = c(0.195,0.350,0.505,0.661,0.816,0.972))
+bical <- data.frame(Y = c(25,39,43,60,63,71),
+                    X = c(0.18,0.36,0.50,0.65,0.78,0.94))
+
+modelo_araxa <- lm(Y ~ X, data = araxa)
+
+modelo_patos <- lm(Y ~ X, data = patos)
+modelo_bical <- lm(Y ~ X, data = bical)
+```
+<br>
+
+**Modelo Araxá**: $Y = 16.35 + 34.58 \cdot X$
+
+O ajuste aos dados,
+
+```{r}
+plot(x = araxa$X, y = araxa$Y,
+     xlab = 'Fósforo',
+     ylab = 'Resistência do Fêmur à quebra',
+     main = 'Gráfico de dispersão e ajuste do modelo araxá ')
+curve(modelo_araxa$coefficients[1] + modelo_araxa$coefficients[2]*x ,  col = 'red', lwd = 2, add=T)
+
+
+```
+
+**Modelo Patos**: $Y = 19.62 + 30.19 \cdot X$
+
+O ajuste aos dados,
+
+```{r}
+plot(x = patos$X, y = patos$Y,
+     xlab = 'Fósforo',
+     ylab = 'Resistência do Fêmur à quebra',
+     main = 'Gráfico de dispersão e ajuste do modelo Patos ')
+curve(modelo_patos$coefficients[1] + modelo_patos$coefficients[2]*x ,  col = 'red', lwd = 2, add=T)
+
+
+```
+
+**Modelo Bicálcico**: $Y = 15.27 + 61.40 \cdot X$
+
+O ajuste aos dados,
+
+```{r}
+plot(x = bical$X, y = bical$Y,
+     xlab = 'Fósforo',
+     ylab = 'Resistência do Fêmur à quebra',
+     main = 'Gráfico de dispersão e ajuste do modelo Bicálcico ')
+curve(modelo_bical$coefficients[1] + modelo_bical$coefficients[2]*x ,  col = 'red', lwd = 2, add=T)
+
+
+```
+<br>
+
+Assim os 3 modelos conseguiram ajustar, aparentemente, bem os dados, visto que esses se distribuim em forma de reta.
+
+<br>
+
+```{r}
+summary(modelo_araxa)
+summary(modelo_patos)
+summary(modelo_bical)
+```
+
+<br>
+
+Para todos modelos, temos que tanto o intercepto quanto o X é significativo usando 99% de confiança, com um $R^2$ maior que 0.8 chegando a 0.96.
+
+<br><br>
+
+&emsp;&emsp; (b) Calcule a disponibilidade relativa do Fósgoro nos dois Fosfatos de rocha e decida pelo melhor;
+
+Temos que
+
+$$DR_{araxa} =  \beta_1^{araxa} / \beta_1^{Bicalcico} = \frac{34.57651}{61.39689} = 0.5631639$$
+$$DR_{patos} =  \beta_1^{patos} / \beta_1^{Bicalcico} = \frac{30.18677}{61.39689} = 0.4916661$$
+
+
+
+```{r}
+DR_araxa <- modelo_araxa$coefficients[2] / modelo_bical$coefficients[2]
+ # Quanto mais melhor
+DR_patos <- modelo_patos$coefficients[2] / modelo_bical$coefficients[2]
+```
+
+
+
+&emsp;&emsp; (c) Trace as retas ajustadas aos dados simultaneamente.
+
+<br><br>
+
+6. Com base nos dados do Instituto Nacional de Estatística de Portugal (INE), o arquivo **cereais** contém a evolução da superfície agrícola (y) utilizada anualmente na produção de cereais para grão (y: **area**, em $km^2$) em Portugal, no éríodo de 1968 a 2011 (x: **ano**). Faça o que se pede:
+
+&emsp;&emsp; (a) Construa uma nuvem de pontos de superfície agrícola vs. ano e comente;
+
+&emsp;&emsp; (b) A partir do gráfico obtido do item anterior, sugira um valor para o coeficiente de correlação entre superfície agrícola e ano. Depois, utilize os comandos do R para calcular esse mesmo coeficiente de correlação. Comente o seu significado;
+
+&emsp;&emsp; (c) Ajuste uma reta de regressão de superfície agrícola utilizada sobre anos. Discuta o significado dos par^metros da reta ajustada, no contexto do problema sob estudo;
+
+&emsp;&emsp; (d) Comente a qualidade da reta obtida, calculando o respectivo coeficiente de determinação e interpretando o valor obtido;
+
+&emsp;&emsp; (e) Trace a reta de regressão ajustada em cima da nuvem de pontos e comente;
+
+&emsp;&emsp; (f) Calcule a Soma de Quadrados Total (SQT), a partir do cálculo da variância amostral de y;
+
+&emsp;&emsp; (g) Calcule o valor da Soma de Quadrados de Regressão (SQReg);
+
+&emsp;&emsp; (h) Calcule a Soma de Quadradis dis Resíduos (SQE), diretamente a partir dos resíduos, e verifique numericamente a relação fundamental da Regressão Linear: $SQT = SQReg + SQE$;
+
+&emsp;&emsp; (i) Altere as unidades de medida da variável área, de $km^2$ para hectares(*area* $\rightarrow$ *area* $\cdot$ 100). Ajuste novamente a regressão, após efetuar essta alteração. O que aconteceu aos parâmetros estimados e ao coeficiente de determinação $R^2$? Comente;
+
+&emsp;&emsp; (j) De novo a partir dos dados originais, transforme a variável ano num contador dos anos do estudo (*ano* $\rightarrow$ *ano* - 1985). Ajuste novamente a regressão, após efetuar esta alteração. O que aconteceu aos parâmetros estimados e ao coeficiente de determinação $R^2$? Comente.
+
+<br><br>
+
+7. Hsuie, Ma e Tsai (1995) estudam o efeito da **razão** molar do ácido sebácico (o regressor) na **viscosidade** intrínseca dos copoliesteres (a resposta).
+
+&emsp;&emsp; (a) Realize uma Análise de RLS completa e apropriada;
+
+&emsp;&emsp; (b) Apresente um gráfico simultâneo com os dados, o ajuste, o IC e o IP;
+
+&emsp;&emsp; (c) Apresente um intervalo de predição para uma viscosidade de 0.95.
+
+<br>
+
+\begin{array}{c|cccccccc}
+\hline
+\textrm{Razão}            &1&0.9&0.8&0.7&0.6&0.5&0.4&0.3 \\
+\hline
+\textrm{Viscosidade}      &0.45&0.20&0.34&0.58&0.70&0.57&0.55&0.75\\
+\hline
+\end{array}
+
+<br><br>
+
+
+8. Com interesse de investigar a relação linear existente entre $X$ (nível de dose (%) nutricional na ração) e $Y$ (resposta à taxa de crescimento), um experimento foi realizado considerando um Delineamento Inteiramente Casualizada (DIC) em um grupo de animais. Realize uma análise completa para os dados e conclua.
+
+\begin{array}{c|ccccccc}
+\hline
+\textrm{X}            &1&1&1&1&1&2&2&2&2&2&3&3&3&3&3&4&4&4&4&4&\\
+\hline
+\textrm{Y}      &2&2&1&1&0.1&1&0.1&0.1&1&1&12&10&14&17&11&7&9&15&8&10&\\
+\hline
+\end{array}
