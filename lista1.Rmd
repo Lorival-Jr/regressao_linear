@@ -414,3 +414,19 @@ Temos que com 95% de confiança, $\beta_0$ está entre 12.80965603 e 13.55748683
 | Residuals | 7  | 80.6   | 11.5    |         |       |
 | Total     | 8  | 1101.6 |         |         |       |
 </center>
+
+&emsp;&emsp;(a) Escreva a equação da reta ajustada;
+
+&emsp;&emsp; (b) Encontre um intervalo de confiança de 95%, para os coeficientes da reta ajusta;
+
+&emsp;&emsp; (c) Verifique se o modelo contribui para explicar a variável resposta. Está adequado? Justifique;
+
+&emsp;&emsp; (d) Encontre a estimativa da variância residual;
+
+<br><br>
+
+5. Um experimento foi conduzido para avaliar, em coelhos a disponibilidade relativa (DR) do Fósforo existente nos Fosfatos da rocha Araxá e de Patos de Minas em relação ao Fósforo existente no Fostato Bicálcico. Os animais foram alimentados com rações contendo níveis crescentes de cada Fosfato  e foram anotados os consumos de ração, o que permitiu calcular o consumo de Fósforo em cada unidade experimental. A variável resposta observada foi a resistência do fêmur à quebra, mensurada com dinamômetro (Tabela 4).
+
+A disponibilidade relativa é estimada pela razão entre o coeficiente linear de regressão (angular no caso da reta) obtido para o Fosfato de interesse e para o Fosfato Bicálcico, isto é:
+
+$$DR^* = \beta_1^* / \beta_1^{Bicalcico}$$
