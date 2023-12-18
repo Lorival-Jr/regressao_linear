@@ -1,0 +1,416 @@
+---
+title: "Untitled"
+author: "LoRiVaL"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, warning = F)
+```
+
+## Lista de Exercícios I 
+
+1. A reta de regressão obtida pelo método dos mínimos quadrados (MMQ) possui propriedades. Algumas delas necessitam ser demonstradas:
+<br>
+
+&emsp;&emsp; (a) que 
+$$\sum^n_{i=1}(x_i - \bar x)^2 = \sum^n_{i=1} x_i^2 - n \bar x^2;$$
+
+Abrindo o binômio temos,
+
+$$\sum^n_{i=1}(x_i - \bar x)^2 = \sum^n_{i=1}(x_i^2 - 2x_i\bar x + \bar x^2)$$
+Distribuindo o somatório,
+
+$$\sum^n_{i=1}(x_i - \bar x)^2 = \sum^n_{i=1}(x_i^2) - \sum^n_{i=1}(2x_i\bar x) + \sum^n_{i=1}(\bar x^2)$$
+
+$$\sum^n_{i=1}(x_i - \bar x)^2 = \sum^n_{i=1}(x_i^2) - 2 \bar x\sum^n_{i=1}(x_i) + n\bar x^2$$
+$$\sum^n_{i=1}(x_i - \bar x)^2 = \sum^n_{i=1}(x_i^2) - 2 \bar x n \bar x + n\bar x^2$$
+$$\sum^n_{i=1}(x_i - \bar x)^2 = \sum^n_{i=1}(x_i^2) - 2 n\bar x^2 + n\bar x^2$$
+
+$$\sum^n_{i=1}(x_i - \bar x)^2 = \sum^n_{i=1}(x_i^2) - n\bar x^2$$
+<br><br>
+
+&emsp;&emsp;(b) a soma dos valores observados é igual à soma dos valores estimados, isto é,
+
+$$\sum^n_{i=1} y_i = \sum^n_{i=1} \hat y_i$$
+Sabemos que $\hat y_i = \hat \beta_0 + \hat \beta_1 x_i$ e que  $\hat \beta_0 = \bar y - \hat \beta_1 \bar x$, assim
+
+$$\sum_{i=1}^n \hat y_i = \sum^n_{i=1} \left( \hat \beta_0 + \hat \beta_1 x_i \right) =
+\sum_{i=1}^n \left(\bar y - \hat \beta_1 \bar x + \hat \beta_1 x_i\right)$$
+
+$$\sum_{i=1}^n \hat y_i = \sum_{i=1}^n (\bar y) - \sum_{i=1}^n(\hat \beta_1 \bar x) + \sum_{i=1}^n(\hat \beta_1 x_i)$$
+$$\sum_{i=1}^n \hat y_i = n\bar y - n\hat \beta_1 \bar x + \hat \beta_1\sum_{i=1}^n( x_i)$$
+$$\sum_{i=1}^n \hat y_i = n\bar y - n\hat \beta_1 \bar x + \hat \beta_1 n \bar x$$
+$$\sum_{i=1}^n \hat y_i = n\bar y$$
+$$\sum^n_{i=1} y_i = n \bar y$$
+Portanto,
+
+$$\sum^n_{i=1} y_i = \sum^n_{i=1} \hat y_i =  n \bar y$$
+<br><br>
+
+&emsp;&emsp;(c) A soma dos resíduos é igual a zero, isto é,
+
+$$\sum^n_{i=1} e_i = 0$$
+
+Sabemos que $e_i = y_i -\hat y_i$, portanto
+
+$$\sum^n_{i=1} e_i = \sum^n_{i=1} (y_i -\hat y_i) = \sum^n_{i=1}y_i -\sum^n_{i=1}\hat y_i $$
+$$\sum^n_{i=1} e_i = n \bar y - n \bar y = 0$$
+$$\sum^n_{i=1} e_i = 0$$
+&emsp;&emsp; (d) a soma do produto dos valores estimados e resíduos é igual a zero, isto é,
+
+$$\sum^n_{i=1} \hat y_i e_i = 0$$
+<br><br><br>
+
+2. Faça o que se pede:
+
+
+&emsp;&emsp;(a) Simule n = 30 valores para o Modelo de Regressão Linear Simples (MRLS) (semente 350) dado por: $Y = −2 + 0.5x + \epsilon$ tal que 
+  
+&emsp;&emsp;&emsp;&emsp;$X$∼$N(0, 1)$ e $\epsilon$ ∼ $N(0, \sigma^2 = 9)$;
+  
+```{r}
+set.seed(350)
+n    <- 30
+x    <- rnorm(n)
+erro <- rnorm(n, 0, 3)
+y    <- -2 + 0.5*x + erro
+```
+<br><br>
+Os dados simulados por $Y = −2 + 0.5x + \epsilon$, dado que $X$∼$N(0, 1)$ e $\epsilon$ ∼ $N(0, \sigma^2 = 9)$ são os seguintes
+
+```{r}
+print(y)
+```
+<br><br>
+&emsp;&emsp;(b) Apresente o diagrama de dispersão dos dados;
+
+```{r}
+plot(x, y,
+     xlab = 'X',
+     ylab = 'Y',
+     main = 'Gráfico de dispersão dos dados simulados'
+     )
+
+```
+Os dados se concentram em torno do -2, devido terem sido gerados para isso, pois $Y = −2 + 0.5x + \epsilon$, e $x$ possui média zero e distribuição normal, no entanto mesmo a função $Y$ sendo de uma reta, os dados não distribuem tão bem na forma de uma reta, possivelmente, devido a variância dos resíduos ser relativamente alta $\sigma^2 = 9$.
+
+  
+  
+&emsp;&emsp;(c) Estime os parâmetros do modelo via MMQ e pela forma matricial, isto é,
+  $\hat \beta = (X′X)^{-1} X′y$;
+  
+Via MMQ, temos que $\hat \beta_0 = \bar y - \hat \beta_1 \bar x$ &emsp; e &emsp; $\hat \beta_1 = \frac{\sum^n_{i=1}(x_i - \bar x)(y_i - \bar y)} {\sum^n_{i=1}(x_i - \bar x)^2}$
+<br>
+Assim, para calcular $\bar \beta_1$, temos $\bar x = 0.04636292$ e $\bar y = -2.176858 $, assim, conseguimos um $\beta_1 = 0.26286$ e usando esse para calcular $\beta_0$ temos que esse vale $-2.189045$. <br> <br>
+
+Assim teríamos que a reta de regressão é dada por $-2.189045 + 0.26286x$, plotando-a nos dados teríamos o seguinte 
+
+```{r}
+beta_1 = sum((x - mean(x)) * (y - mean(y))) / sum((x - mean(x))^2)
+
+beta_0 = mean(y) - beta_1*mean(x)
+
+plot(x, y,
+     xlab = 'X',
+     ylab = 'Y',
+     main = 'Gráfico de dispersão dos dados simulados'
+     )
+curve(beta_0 + beta_1*x, add =T, col = 'red')
+
+```
+
+<br>
+
+  
+Pela forma matricial precisamos calular $\hat \beta = (X′X)^{-1} X′Y$, para isso, primeiramente precisamos definir as matrizes $X$ e $Y$, temos que $X$ é
+```{r}
+matriz_x = matrix(c(rep(1,n),x), ncol =2)
+matriz_x
+```
+E que $Y$ é,
+
+```{r}
+matriz_y = matrix(y)
+matriz_y
+```
+
+Precisamos também encontrar a transposta de $X$, a matriz $X'$, sendo essa
+
+```{r}
+t(matriz_x)
+```
+
+calculando $X'X$, temos
+
+```{r}
+t(matriz_x) %*% matriz_x
+```
+
+Agora invertendo essa matriz, temos
+
+```{r}
+solve(t(matriz_x) %*% matriz_x)
+```
+
+Calculando $X' Y$,
+
+
+```{r}
+t(matriz_x) %*% matriz_y
+```
+
+Agora calculando $\hat \beta$ de fato,
+
+```{r}
+solve(t(matriz_x) %*% matriz_x) %*% t(matriz_x) %*% matriz_y
+```
+Assim temos que $\beta_0 = -2.189045$ e $\beta_1 = 0.262860$, e a reta de regressão  $-2.189045 + 0.262860x$, o mesmo valor calculado de forma analítica. <br>
+  
+plotando essa função teríamos a seguinte reta,
+```{r}
+betas <- solve(t(matriz_x) %*% matriz_x) %*% t(matriz_x) %*% matriz_y
+
+plot(x, y,
+     xlab = 'X',
+     ylab = 'Y',
+     main = 'Gráfico de dispersão dos dados simulados'
+     )
+curve(betas[1] + betas[2]*x, add =T, col = 'red')
+```
+<br><br>
+
+  (d) Apresente o histograma dos erros e teste sua normalidade via Shapiro-Wilk.
+ 
+```{r}
+hist(erro, 
+     xlab = 'Erro',
+     ylab = 'Frequência',
+     main = 'Histograma dos erros')
+
+```
+Podemos vizualizar que os valores mais frequêntes se encontra de -2 a 2.
+<br>
+Agora para testar a normalidade dos resíduos será usado o teste de Shapiro-Wilk que possui as seguintes hipóteses
+
+$$
+    \begin{cases}
+H_{0}: \textrm{Os dados seguem uma distribuição normal.}\\
+H_{1}: \textrm{Os dados não se distribuem como uma normal.}
+    \end{cases}
+$$
+
+```{r}
+shapiro.test(erro)
+```
+Verificando a normalidade dos resíduos, temos que utilizando 95% de confiança, não rejeitamos $H_0$, ou seja, temos indícios de que os erros seguem normalidade.
+
+<br><br>
+
+3) Com o objetivo de se estudar a relação entre Tempo de uma reação química (resposta) e Temperatura, um certo experimento foi realizado. A Tabela 1 a seguir contém os valores das temperaturas, em $°C$, e os tempos obtidos, em segundos
+
+```{r}
+L1 <- c(11.3, 11.8, 11.5, 12.1, 11.7)
+L2 <- c(11.8, 11.5, 11.4, 11.7, 11.2)
+L3 <- c(10.9, 11.2, 10.8, 10.6, 10.3)
+L4 <- c(10.4, 9.8 , 9.5 , 9.9 , 9.2 )
+L5 <- c(9.6 , 9.0 , 8.7 , 8.3 , 9.1 )
+L6 <- c(9.1 , 9.3 , 8.5 , 8.6 , 8.3 )
+L7 <- c(8.4 , 8.1 , 8.1 , 7.7 , 7.9 )
+
+temperatura <- c(rep(20, 5), rep(30, 5), rep(40, 5),
+                 rep(50, 5), rep(60, 5), rep(70, 5),
+                 rep(80, 5))
+
+tempo       <- c(L1, L2, L3, L4, L5, L6, L7)
+
+
+dados       <- data.frame(Temperatura <- temperatura,
+                          Tempo       <- tempo)
+
+colnames(dados) <- c('Temperatura', 'Tempo')
+
+print(dados)
+
+```
+<br><br>
+&emsp;&emsp;a) Apresente o diagrama de dispersão dos dados;
+
+```{r}
+plot(dados$Temperatura, dados$Tempo,
+     xlab = 'Temperatura',
+     ylab = 'Tempo',
+     main = 'Gráfico de dispersão do tempo pela temperatura')
+```
+<br>
+O gráfico de dispersão é no eixo tempo contínuo e no eixo temperatura discreto, os pontos formam, aparentemente, uma reta.
+
+<br><br>
+&emsp;&emsp;b) Estime a média, desvio-padrão, variância e coeficiente de variação para a resposta (Tempo de reação), considerando-a como normalmente distribuiída (Sugestão: Utilize a função fitdistr da livraria MASS do R)
+
+```{r}
+library(MASS)
+
+est_L1 <- fitdistr(L1, dnorm, start = list(mean= 10, sd= 2))$estimate
+est_L2 <- fitdistr(L2, dnorm, start = list(mean= 10, sd= 2))$estimate
+est_L3 <- fitdistr(L3, dnorm, start = list(mean= 10, sd= 2))$estimate
+est_L4 <- fitdistr(L4, dnorm, start = list(mean= 10, sd= 2))$estimate
+est_L5 <- fitdistr(L5, dnorm, start = list(mean= 10, sd= 2))$estimate
+est_L6 <- fitdistr(L6, dnorm, start = list(mean= 10, sd= 2))$estimate
+est_L7 <- fitdistr(L7, dnorm, start = list(mean= 10, sd= 2))$estimate
+
+estimativas <- data.frame(rbind(est_L1, est_L2, est_L3,
+                     est_L4, est_L5, est_L6, est_L7))
+
+estimativas$var <- estimativas$sd**2
+estimativas$cv  <- estimativas$sd / estimativas$mean
+
+row.names(estimativas) <- c(seq(20, 80, 10))
+
+print(estimativas)
+
+```
+
+Estimando as estatísticas via o *fitdistr*, temos um coeficiente de variação baixo para todas temperaturas, ou seja, a média pode ser usada para representar os dados, e temos o comportamento esperado de acordo com o gráfico para as médias, conforme a temperatura diminui a média do tempo aumenta.
+
+
+<br><br>
+
+&emsp;&emsp;c) Calcule a média, desvio-padrão, variância e coeficiente de variação para a resposta em cada nível de temperatura e responda se há algum indício de heterocedasticidade. Justifique;
+
+```{r}
+tempos      <- data.frame(T20 = L1, T30 = L2, T40 = L3, T50 = L4,
+                          T60 = L5, T70 = L6, T80 = L7 )
+
+
+estimativas <- data.frame(
+                          apply(tempos, 2, FUN = function(x)
+                                  {media  <- mean(x)
+                                   desvio <- sd(x)
+                                   varia  <- var(x)
+                                   cv     <- sd(x)/mean(x)
+                                   return(c(media, desvio, varia, cv))
+                                   }))
+
+row.names(estimativas) <- c('mean', 'sd', 'var', 'cv')
+estimativas            <- data.frame(t(estimativas))
+
+estimativas
+
+```
+Sem realizar testes, eu diria que, aparentemente, não há heterocedasticidade, pois, a variância tem um aumento na temperatura 50, 60 e 70, mas depois disso ela abaixa novamente, não explodindo conform a variável x aumenta, como é comum no caso de heterocedasticidade. No entanto, para verificar se a variação da variância pode ser considerada alta o suficiente e por conseguinte não existir homocedasticidade, é necessário fazer os testes específicos para isso.
+
+<br><br>
+
+&emsp;&emsp;d) Estime os parâmetros do MRLS da Temperatura versus Tempo via comando *lm* do R;
+
+```{r}
+
+modelo1 <- lm(Tempo ~ Temperatura, data = dados)
+modelo1
+```
+Assim temos o seguinte modelo, *Tempo* = 13.18357 - 0.06521 $\cdot$ *Temperatura*.
+
+E agora que temos um modelo, podemos verificar a heterocedasticidade do exercício anterior. Para isso, o teste de Goldfeld-Quandt será usado, o qual possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \textrm{A homocedasticidade está presente.}\\
+H_{1}: \textrm{A homocedasticidade não está presente.}
+    \end{cases}
+$$
+```{r}
+
+library(lmtest)
+
+gqtest(modelo1)
+
+```
+Assim, considerando uma confiança de 95%, não rejeitamos $H_0$, ou seja, a homocedasticidade está presente.
+
+<br><br>
+&emsp;&emsp;e) Teste a significância dos parâmetros em nível de 5%;
+
+Para testar a significância de $\beta_1$, temos dois passos a serem seguidos,
+
+- Usar um teste t para as seguintes hipóteses
+$$
+    \begin{cases}
+H_{0}: {\beta_1 = 0}\\
+H_{1}: {\beta_1 \not = 0}
+    \end{cases}
+$$
+- Usar o teste F ao ajustamento global do modelo.
+<br>
+Realizando o teste t,
+
+$$t_c = \frac{\hat \beta_1 - \beta_1}{\sqrt{\frac{QME}{Sxx}}}$$
+$t_c$ &nbsp;~&nbsp; $t_{ n-2, \alpha}$ <br>
+
+$$S_{xx} = \sum^n_{i=1} (x_i - \bar x)^2 = 14000$$
+$$QME = \frac{SQE}{(n-2)} =  \frac{\sum^n_{i=1}(y_i - \hat y_i)^2}{(n-2)}$$
+$$QME = \frac{5.381071}{35}= 0.1537449$$
+$$t_c = \frac{\hat \beta_1 - \beta_1}{\sqrt{\frac{QME}{Sxx}}}$$
+$$t_c = \frac{-0.06521429 - 0}{\sqrt{\frac{0.1537449}{14000}}} = -19.67915$$
+Temos que a área de não rejeição dada por $t_{33, 0.025} < t_c < t_{33, 0.975}$, pegando os valores de $t$ tabelados, temos que essa área é dada por $-2.034515 < t_c < 2.034515$. Portanto $t_c < -2.034515$, e então com 95% de confiança rejeitamos $H_0$, ou seja, $\beta_1$ é diferente de zero.
+```{r}
+residuo <- Tempo - modelo1$fitted.values
+tc <- (modelo1$coefficients[2] - 0)/((sum(residuo^2))/length(residuo)/ sum((Temperatura - mean(Temperatura))^2))^0.5
+
+#qt(0.975, 33)
+```
+
+&emsp;&emsp;f) Teste a normalidade nos resíduos;
+
+Para testar a normalidade dos resíduos será usado o teste de Shapiro-Wilk, quue possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \textrm{Os dados seguem uma distribuição normal.}\\
+H_{1}: \textrm{Os dados não se distribuem como uma normal.}
+    \end{cases}
+$$
+
+```{r}
+shapiro.test(modelo1$residuals)
+```
+Assim, com 95% de confiança não rejeitamos $H_0$, ou seja, os resíduos do modelo seguem a distribuição normal, assim esses pressuposto está sendo seguido.
+
+
+&emsp;&emsp;g) Trace a reta estimada sobre os pontos observados;
+
+```{r}
+plot(dados$Temperatura, dados$Tempo,
+     xlab = 'Temperatura',
+     ylab = 'Tempo',
+     main = 'Gráfico de dispersão do tempo pela temperatura')
+curve(modelo1$coefficients[1] + modelo1$coefficients[2]*x, add = T, col = 'red', lty = 1, lwd = 2)
+
+```
+Assim como visualizado no gráfico de dispersão inicial, os pontos formam uma espécie de reta, e o modelo consegue ajustar uma reta de regressão que passe pelo meio de todos pontos nos grupos de temperatura. <br><br>
+
+&emsp;&emsp;h) Construa intervalos de 95% de confiança para os parâmetros estimados;
+
+```{r}
+confint(modelo1)
+```
+Temos que com 95% de confiança, $\beta_0$ está entre 12.80965603 e 13.55748683, enquanto $\beta_1$ está entre -0.07215772 e  -0.05827085.
+<br><br>
+
+4. As tabelas 2 e 3 a seguir, fazem parte da saída de uma análise de regressão realizada em um determinado programa estatístico.
+<br>
+
+<center>
+| Parameter | Estimate | Srd. Error | t value | p     |
+|-----------|----------|------------|---------|-------|
+| Intercept | 83.0740  | 6.5930     | 12.60   | 0.000 |
+| x         | -1.1848  | 0.1258     | -9.42   | 0.000 |
+<br>
+
+| FV        | Df | Sum Sq | Mean Sq | F value | p     |
+|-----------|----|--------|---------|---------|-------|
+| x         | 1  | 1021.1 | 1021.1  | 88.68   | 0.000 |
+| Residuals | 7  | 80.6   | 11.5    |         |       |
+| Total     | 8  | 1101.6 |         |         |       |
+</center>
