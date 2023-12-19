@@ -690,7 +690,69 @@ Tem a diferença de 1 unidade que é devido a aproximação. <br><br>
 
 &emsp;&emsp; (i) Altere as unidades de medida da variável área, de $km^2$ para hectares(*area* $\rightarrow$ *area* $\cdot$ 100). Ajuste novamente a regressão, após efetuar essta alteração. O que aconteceu aos parâmetros estimados e ao coeficiente de determinação $R^2$? Comente;
 
+```{r}
+cereais$hectares <- cereais$area * 100
+cereais
+
+
+modelo2 <- lm(hectares ~ ano, data = cereais)
+
+```
+<br>
+Ajustando o modelo da área em hectares sendo explicado pelo ano, temos $Y = 52300171 - 25876\cdot X$. 
+
+Comparando com o modelo da área em $km^2$ sendo explicado pelo ano, tínhamos $Y = 523001.71 -258.76 \cdot X$, ou seja, a variável explicativa foi multiplicada por 100 e coeficientes do modelo também.
+<br>
+Agora olhando o modelo ajustado aos pontos graficamente,
+
+```{r}
+plot(x = cereais$ano, y = cereais$hectares,
+     xlab = 'Ano',
+     ylab = 'Superfície agrícola',
+     main = 'Gráfico de dispersão do ano pela área agrícola em hectares')
+curve(modelo2$coefficients[1] + modelo2$coefficients[2]*x, add=T,
+      lwd = 2, col = 'red')
+```
+O gráfico não mudou nada, apenas a escala do eixo y.
+
+```{r}
+summary(modelo2)
+```
+<br>
+Temos que o coeficiente de determinação ajustado do modelo por hectare é $\bar R^2 = 0.9642551$, enquanto o do modelo por área em $km^2$ era $\bar R^2 = 0.9642551$. Ou seja, não mudaram.
+<br><br>
+
 &emsp;&emsp; (j) De novo a partir dos dados originais, transforme a variável ano num contador dos anos do estudo (*ano* $\rightarrow$ *ano* - 1985). Ajuste novamente a regressão, após efetuar esta alteração. O que aconteceu aos parâmetros estimados e ao coeficiente de determinação $R^2$? Comente.
+<br>
+
+```{r}
+cereais <- cereais[-3]
+cereais['data_ajustada'] <- cereais$ano - 1985
+cereais
+
+modelo3 <- lm(area ~ data_ajustada, data = cereais)
+modelo3
+```
+Ajustando o modelo da área em hectares sendo explicado pelo ano, temos $Y = 9362.5 - 258.76 \cdot X$. 
+
+Comparando com o modelo inicial que era $Y = 523001.71 -258.76 \cdot X$, temos uma mudança no intercepto, diminuindo esse visto que o segundo parâmetro vai ser multiplicado por um $X$ menor, já para o $\beta_1$ não houve mudança, continuou com o mesmo valor.
+<br>
+
+```{r}
+plot(x = cereais$data_ajustada, y = cereais$area,
+     xlab = 'Ano ajustado',
+     ylab = 'Superfície agrícola',
+     main = 'Gráfico de dispersão do ano pela área agrícola em hectares')
+curve(modelo3$coefficients[1] + modelo3$coefficients[2]*x, add=T,
+      lwd = 2, col = 'red')
+```
+O gráfico, novamente, é idêntico, apenas mudando a escala do eixo x.
+<br>
+```{r}
+summary(modelo3)
+```
+<br>
+O $\bar R^2$ não sofreu mudanças também.
 
 <br><br>
 
