@@ -459,7 +459,6 @@ bical <- data.frame(Y = c(25,39,43,60,63,71),
                     X = c(0.18,0.36,0.50,0.65,0.78,0.94))
 
 modelo_araxa <- lm(Y ~ X, data = araxa)
-
 modelo_patos <- lm(Y ~ X, data = patos)
 modelo_bical <- lm(Y ~ X, data = bical)
 ```
@@ -530,7 +529,7 @@ Temos que
 
 $$DR_{araxa} =  \beta_1^{araxa} / \beta_1^{Bicalcico} = \frac{34.57651}{61.39689} = 0.5631639$$
 $$DR_{patos} =  \beta_1^{patos} / \beta_1^{Bicalcico} = \frac{30.18677}{61.39689} = 0.4916661$$
-
+Assim, a rocha de Araxá tem um $DR$ maior que a de Patos de Minas, e por consequência possui mais Fósforo.
 
 
 ```{r}
@@ -543,25 +542,151 @@ DR_patos <- modelo_patos$coefficients[2] / modelo_bical$coefficients[2]
 
 &emsp;&emsp; (c) Trace as retas ajustadas aos dados simultaneamente.
 
+```{r}
+dados <- rbind(araxa, patos, bical)
+
+plot(x = dados$X, y = dados$Y,
+     xlab = 'Fósforo',
+     ylab = 'Resistência do Fêmur à quebra',
+     main = 'Gráfico de dispersão e ajuste do modelos')
+curve(modelo_araxa$coefficients[1] + modelo_araxa$coefficients[2]*x ,  col = 'red', lwd = 2, add=T, lty=2)
+curve(modelo_patos$coefficients[1] + modelo_patos$coefficients[2]*x ,  col = 'blue', lwd = 2, add=T, lty=2)
+curve(modelo_bical$coefficients[1] + modelo_bical$coefficients[2]*x ,  col = 'green3', lwd = 2, add=T, lty=2)
+
+text(x=0.8, y=70, "Bicálcico",col = 'green3')
+text(x=1, y=46, "Patos",col = 'blue')
+text(x=0.9, y=53, "Araxá",col = 'red')
+```
+
+
 <br><br>
 
 6. Com base nos dados do Instituto Nacional de Estatística de Portugal (INE), o arquivo **cereais** contém a evolução da superfície agrícola (y) utilizada anualmente na produção de cereais para grão (y: **area**, em $km^2$) em Portugal, no éríodo de 1968 a 2011 (x: **ano**). Faça o que se pede:
+```{r}
+cereais <- read.table(file = 'dados/cereais.txt',header = T)
+cereais
+```
+
 
 &emsp;&emsp; (a) Construa uma nuvem de pontos de superfície agrícola vs. ano e comente;
 
-&emsp;&emsp; (b) A partir do gráfico obtido do item anterior, sugira um valor para o coeficiente de correlação entre superfície agrícola e ano. Depois, utilize os comandos do R para calcular esse mesmo coeficiente de correlação. Comente o seu significado;
+```{r}
 
-&emsp;&emsp; (c) Ajuste uma reta de regressão de superfície agrícola utilizada sobre anos. Discuta o significado dos par^metros da reta ajustada, no contexto do problema sob estudo;
+plot(x = cereais$ano, y = cereais$area,
+     xlab = 'Ano',
+     ylab = 'Superfície agrícola',
+     main = 'Gráfico de dispersão do ano pela área agrícola')
+```
+<br>
+No gráfico acima, podemos verificar que os pontos de superfície e ano formam uma reta.
+<br><br>
+
+&emsp;&emsp; (b) A partir do gráfico obtido do item anterior, sugira um valor para o coeficiente de correlação entre superfície agrícola e ano. Depois, utilize os comandos do R para calcular esse mesmo coeficiente de correlação. Comente o seu significado;
+<br>
+Apenas pelo gráfico de dispersão, a correlação parece ser bem alta pelos dados formarem uma reta muito bem definida e com os pontos próximo, sugerindo seria um valor de $\rho=-0.9$.
+
+<br>
+
+Para calcular a correlação será usado o coeficiente de correlação de Pearson, visto que esse é usado para dados que tem relação linear, o coeficiente possui a seguinte fórmula,
+
+$$\rho = \frac{cov(X,Y)}{\sqrt{var(X) \cdot var(Y)}}$$
+
+```{r, echo = T}
+cor(cereais$ano, cereais$area)
+```
+<br>
+O $\rho = -0.9826927$, representa uma correlação inversa quase perfeita, como era observado no gráfico que forma uma reta, demonstrando que, possivelmente, o ano tem grande influência na superfície agrícola.
+<br><br>
+
+&emsp;&emsp; (c) Ajuste uma reta de regressão de superfície agrícola utilizada sobre anos. Discuta o significado dos parâmetros da reta ajustada, no contexto do problema sob estudo;
+
+<br>
+
+O modelo linear possui a seguinte fórmula $Y = 523001.7 -258.8X$.
+
+```{r}
+modelo1 <- lm(area ~ ano, data = cereais)
+
+plot(x = cereais$ano, y = cereais$area,
+     xlab = 'Ano',
+     ylab = 'Superfície agrícola',
+     main = 'Gráfico de dispersão do ano pela área agrícola')
+curve(modelo1$coefficients[1] + modelo1$coefficients[2]*x, add=T,
+      lwd = 2, col = 'red')
+summary(modelo1)
+```
+<br>
+Ambos parâmetros são significativos a 99.99%, temos que o Intercepto = 523001.7, ele é bem alto devido o ano estar na casa de $10^3$ diminuindo bastante esse valor, quanto ao ano = -258.8, ele é negativo assim diminuindo o valor do intercepto conforme o ano aumenta.
+<br><br>
 
 &emsp;&emsp; (d) Comente a qualidade da reta obtida, calculando o respectivo coeficiente de determinação e interpretando o valor obtido;
+<br>
+Temos que o coeficiente de determinação $(R^2)$ pode ser usado para testar a qualidade do ajuste, sendo calculado por
 
+$$R^2 = \frac{SQReg}{SQT} = 
+\frac{\sum^n_{i=1}(\hat Y_i - \bar Y)^2}{\sum^n_{i=1} (Y_i - \bar Y)^2}$$
+<br>
+```{r}
+R2 <- sum((modelo1$fitted.values - mean(cereais$area))^2)/sum((cereais$area - mean(cereais$area))^2)
+R2
+```
+$$R^2 = \frac{97924480}{101404176} =  0.965684$$
+
+No nosso modelo, temos que $R^2 =  0.9656849$, agora calculando o coeficiente de determinação ajustado, usando
+<br>
+$$\bar R^2 = R^2 - \frac{1}{n-2}(1 - R^2)$$
+$$\bar R^2 = 0.9656849^2 = \frac{1}{35-2}(1 - 0.9656849) = 0.9642551$$
+```{r}
+R2 - (1)/(nrow(cereais)-2) * (1 - R2)
+```
+<br>
+Temos que $\bar R^2 = 0.9642551$, lembrando que $0 < R^2 < 1$ e quanto mais perto de 1 o $R$, melhor o ajuste do modelo, assim de acordo apenas com o coeficiente de determinação ajustado o modelo está explicando quase perfeitamente os dados.
+
+<br><br>
 &emsp;&emsp; (e) Trace a reta de regressão ajustada em cima da nuvem de pontos e comente;
 
+```{r}
+plot(x = cereais$ano, y = cereais$area,
+     xlab = 'Ano',
+     ylab = 'Superfície agrícola',
+     main = 'Gráfico de dispersão do ano pela área agrícola')
+curve(modelo1$coefficients[1] + modelo1$coefficients[2]*x, add=T,
+      lwd = 2, col = 'red')
+```
+<br>
+
+A reta se ajusta bem aos dados, visto esses terem uma alta relação linear. <br><br>
+
 &emsp;&emsp; (f) Calcule a Soma de Quadrados Total (SQT), a partir do cálculo da variância amostral de y;
+<br>
 
+<br><br>
 &emsp;&emsp; (g) Calcule o valor da Soma de Quadrados de Regressão (SQReg);
+<br>
 
-&emsp;&emsp; (h) Calcule a Soma de Quadradis dis Resíduos (SQE), diretamente a partir dos resíduos, e verifique numericamente a relação fundamental da Regressão Linear: $SQT = SQReg + SQE$;
+$$SQReg = \sum^n_{i=1}(\hat Y_i - \bar Y)^2 = 97924480 $$
+```{r}
+sum((modelo1$fitted.values - mean(cereais$area))^2)
+```
+
+<br><br>
+&emsp;&emsp; (h) Calcule a Soma de Quadrados dos Resíduos (SQE), diretamente a partir dos resíduos, e verifique numericamente a relação fundamental da Regressão Linear: $SQT = SQReg + SQE$;
+<br>
+De exercícios anteriores temos que $SQReg = 97924480$ e $SQT = 101404176$.
+<br>
+
+$$SQT = SQReg + SQE$$
+$$101404176 = 97924480 + SQE$$
+$$101404176 - 97924480 = SQE$$
+$$SQE = 3479696$$
+<br>
+Calculando diretamente pelos resíduos,
+
+```{r}
+sum(modelo1$residuals^2)
+```
+<br>
+Tem a diferença de 1 unidade que é devido a aproximação. <br><br>
 
 &emsp;&emsp; (i) Altere as unidades de medida da variável área, de $km^2$ para hectares(*area* $\rightarrow$ *area* $\cdot$ 100). Ajuste novamente a regressão, após efetuar essta alteração. O que aconteceu aos parâmetros estimados e ao coeficiente de determinação $R^2$? Comente;
 
