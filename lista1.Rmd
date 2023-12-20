@@ -757,13 +757,6 @@ O $\bar R^2$ não sofreu mudanças também.
 <br><br>
 
 7. Hsuie, Ma e Tsai (1995) estudam o efeito da **razão** molar do ácido sebácico (o regressor) na **viscosidade** intrínseca dos copoliesteres (a resposta).
-
-&emsp;&emsp; (a) Realize uma Análise de RLS completa e apropriada;
-
-&emsp;&emsp; (b) Apresente um gráfico simultâneo com os dados, o ajuste, o IC e o IP;
-
-&emsp;&emsp; (c) Apresente um intervalo de predição para uma viscosidade de 0.95.
-
 <br>
 
 \begin{array}{c|cccccccc}
@@ -773,6 +766,130 @@ O $\bar R^2$ não sofreu mudanças também.
 \textrm{Viscosidade}      &0.45&0.20&0.34&0.58&0.70&0.57&0.55&0.75\\
 \hline
 \end{array}
+<br>
+
+&emsp;&emsp; (a) Realize uma Análise de RLS completa e apropriada;
+<br>
+
+```{r}
+dados <- data.frame(razao = seq(1, 0.3, -0.1),
+                    viscosidade = c(0.45, 0.2, 0.34, 0.58, 0.7, 0.57, 0.55, 0.75))
+  
+plot(x = dados$razao, y = dados$viscosidade,
+     xlab = 'Razão molar',
+     ylab = 'Viscosidade',
+     main = 'Gráfico de dispersão da viscosidade pela razão molar')
+
+```
+<br>
+Apenas olhando o gráfico de dispersão, talvez uma reta não se ajuste, possívelmente, uma função de terceiro ou quarto grau faria um ajuste melhor. Mas será tentado um modelo linear simples inicialmente.<br>
+
+```{r}
+modelo1 <- lm(viscosidade ~ razao, data = dados)
+summary(modelo1)
+```
+<br>
+O modelo linear simples estimado foi $Y = 0.8781 -0.5548 \cdot X$, com o intercepto sendo significante a $99.99$% de confiança e a razão significante a $95$%, possuindo um coeficiente de determinação ajustada de $\bar R^2 = 0.4835$, ou seja, baseado apenas no R-ajustado um ajuste ruim.
+<br><br>
+
+```{r}
+
+plot(x = dados$razao, y = dados$viscosidade,
+     xlab = 'Razão molar',
+     ylab = 'Viscosidade',
+     main = 'Gráfico de dispersão da viscosidade pela razão molar')
+curve(modelo1$coefficients[1] + modelo1$coefficients[2]*x, add = T, col = 'red', lty = 1, lwd = 2)
+```
+<br>
+A reta ficou no meio dos pontos, mas não se ajustou bem.
+<br>
+Verificando os pressupostos do modelo,
+
+**Normalidade dos resíduos** <br>
+
+Para isso, será usado o teste de Shapiro-Wilk, que possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \textrm{Os dados seguem uma distribuição normal.}\\
+H_{1}: \textrm{Os dados não se distribuem como uma normal.}
+    \end{cases}
+$$
+<br>
+```{r}
+shapiro.test(modelo1$residuals)
+```
+Assim, utilizando 95% de confiança, não rejeitamos $H_0$, temos que os resíduos seguem uma distribuição normal.
+<br><br>
+
+**Homocedastidade**
+
+Para isso, o teste de Goldfeld-Quandt será usado, o qual possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \textrm{A homocedasticidade está presente.}\\
+H_{1}: \textrm{A homocedasticidade não está presente.}
+    \end{cases}
+$$
+
+```{r}
+library(lmtest)
+
+gqtest(modelo1)
+```
+Usando 95% de confiança não rejeitamos $H_0$, ou seja, a homocedasticidade está presente nas variáveis independentes.
+<br><br>
+
+**Resíduos independentes e não correlacionados**<br>
+<br>
+Análise gráfica,
+```{r}
+
+```
+<br>
+
+
+Para testar se existe de fato não correlação será usado o teste de Durbin-Watson, que possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \rho = 0,    &&\textrm{Existe independência}\\
+H_{1}: \rho \not= 0,&&\textrm{Não existe independência}
+    \end{cases}
+$$
+
+```{r}
+library(car)
+durbinWatsonTest(modelo1)
+```
+<br>
+Assim, usando 95% de confiança, não rejeitamos $H_0$, ou seja, existe independência nos resíduos.
+<br><br>
+
+Assim, todos os pressupostos do modelo foram atendidos.
+<br>
+<br>
+Para tentar melhorar o modelo será feita a transformação de Box-Cox que é a seguinte, <br>
+
+$$
+    \begin{cases}
+Y \rightarrow \frac{Y^\lambda - 1}{\lambda}&,    & \lambda \not = 0;\\
+\\
+Y \rightarrow \ln(Y)&,& \lambda = 0.
+    \end{cases}
+$$
+<br>
+```{r}
+help("box.cox")
+box.cox()
+```
+
+&emsp;&emsp; (b) Apresente um gráfico simultâneo com os dados, o ajuste, o IC e o IP;
+
+&emsp;&emsp; (c) Apresente um intervalo de predição para uma viscosidade de 0.95.
+
+<br>
 
 <br><br>
 
