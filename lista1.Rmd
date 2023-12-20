@@ -881,12 +881,66 @@ Y \rightarrow \ln(Y)&,& \lambda = 0.
 $$
 <br>
 ```{r}
-help("box.cox")
-box.cox()
+library(MASS)
+
+w = boxcox(viscosidade ~ razao, data=dados, plotit=T)
+max(w$y)
+posicao = which.max(w$y); posicao
+w$y[posicao]
+w$x[posicao]
+lambda = w$x[posicao]
+dados$y2 = (dados$viscosidade^(lambda)-1)/lambda
+modelo2 <- lm(y2 ~ razao, data = dados)
+
+plot(x = dados$razao, y = dados$y2,
+     xlab = 'Razão molar',
+     ylab = 'Viscosidade',
+     main = 'Gráfico de dispersão da viscosidade pela razão molar')
+curve(modelo2$coefficients[1] + modelo2$coefficients[2]*x, add = T, col = 'red', lty = 1, lwd = 2)
+
+shapiro.test(modelo2$residuals)
+gqtest(modelo2)
+durbinWatsonTest(modelo2)
 ```
+Daí temos que o $\lambda = 1.636364$, com o intervalo de confiança não contendo o zero por pouco.
+
+O Ajuste não parece ter melhorado muito, e já realizado todos os testes para verificar os pressupostos, o modelo passou.
+<br>
+
+```{r}
+
+summary(modelo2)
+
+```
+Olhando o $\bar R^2$ aumentou de 0.4835 para 0.5075, o intercepto não foi significativo, e a razão foi significativa a 99.99%. 
+<br><br>
 
 &emsp;&emsp; (b) Apresente um gráfico simultâneo com os dados, o ajuste, o IC e o IP;
+<br>
+Por não haver uma grande diferença no ajuste dos modelos, será optado pelo primeiro sem a transformação.
 
+```{r}
+ICs <- confint(modelo1)
+
+y.pred      = predict(modelo1)
+Interv.conf = predict(modelo1,interval="confidence")
+Interv.pred = predict(modelo1,interval="prediction")
+m           = matrix(cbind(Interv.conf,Interv.pred[,2:3]),ncol=5)
+nomes       = list(NULL,c("y.predito","Linf.IC","Lsup.IC","Linf.IP","Lsup.IP"))
+dimnames(m) = nomes
+R2 <- summary(modelo1)$adj.r.squared
+#--- Grafico do ajuste completo ---#
+dev.off()
+matplot(dados$razao,m,lty=c(1,2,2,3,3),type="l",col=c(1,2,2,4,4),bty="n",main="",
+        xlab="Razão molar",ylab="Viscosidade")
+points(dados$razao,dados$viscosidade, pch=20)
+legend('bottomleft', c("Regressao","Confianca","Predicao"),
+       bty="n", cex=0.8, lty=1:3, col=c(1,2,4))
+text(6,35, "Reta estimada: Y = 0.8781 -0.5548X", cex=0.8)
+text(6,34, "R? = 0.4834", cex=0.8)
+```
+
+<br><br>
 &emsp;&emsp; (c) Apresente um intervalo de predição para uma viscosidade de 0.95.
 
 <br>
