@@ -9,6 +9,16 @@ output: html_document
 knitr::opts_chunk$set(echo = F, warning = F)
 ```
 
+<style>
+  body{
+    text-align: justify;
+    font-size: 16px
+    }
+  h4 {font-size:20px}
+  h5 {font-size:18px}
+  strong {fontsize:16px}
+</style>
+
 ## Lista de Exercícios I 
 
 1. A reta de regressão obtida pelo método dos mínimos quadrados (MMQ) possui propriedades. Algumas delas necessitam ser demonstradas:
@@ -61,6 +71,24 @@ $$\sum^n_{i=1} e_i = 0$$
 &emsp;&emsp; (d) a soma do produto dos valores estimados e resíduos é igual a zero, isto é,
 
 $$\sum^n_{i=1} \hat y_i e_i = 0$$
+Sabemos que $\hat y_i = \beta_0 +\beta_1x_i$,
+
+$$\sum^n_{i=1} \hat y_i e_i =  \sum^n_{i=1}(\beta_0 + \beta_1x_i)e_i$$
+$$\sum^n_{i=1} \hat y_i e_i =  \sum^n_{i=1}(\beta_0 e_i) +
+\sum^n_{i=1}(\beta_1x_i)e_i$$
+$$\sum^n_{i=1} \hat y_i e_i =  \beta_0 \sum^n_{i=1}(e_i) +
+\beta_1\sum^n_{i=1}x_ie_i$$
+
+Sabemos que $\sum^n_{i=1} e_i = 0$, assim
+
+$$\sum^n_{i=1} \hat y_i e_i =  \beta_0 \cdot 0 +
+\beta_1\sum^n_{i=1}x_i\epsilon_i$$
+$$\sum^n_{i=1} \hat y_i e_i = \beta_1\sum^n_{i=1}x_ie_i$$
+$$\sum^n_{i=1} \hat y_i e_i = \beta_1\sum^n_{i=1}x_ie_i$$
+$$\sum^n_{i=1} \hat y_i e_i = \beta_1\sum^n_{i=1}x_i(y_i - \hat y_i)$$
+$$\sum^n_{i=1} \hat y_i e_i = \beta_1\sum^n_{i=1}x_iy_i - \beta_1\sum^n_{i=1}x_i\hat y_i$$
+$$\sum^n_{i=1} \hat y_i e_i = \beta_1\left(\sum^n_{i=1}x_i y_i - \sum^n_{i=1}x_i \hat y_i \right)$$
+
 <br><br><br>
 
 2. Faça o que se pede:
@@ -94,6 +122,7 @@ plot(x, y,
      )
 
 ```
+<br>
 Os dados se concentram em torno do -2, devido terem sido gerados para isso, pois $Y = −2 + 0.5x + \epsilon$, e $x$ possui média zero e distribuição normal, no entanto mesmo a função $Y$ sendo de uma reta, os dados não distribuem tão bem na forma de uma reta, possivelmente, devido a variância dos resíduos ser relativamente alta $\sigma^2 = 9$.
 
   
@@ -190,6 +219,7 @@ hist(erro,
      main = 'Histograma dos erros')
 
 ```
+<br>
 Podemos vizualizar que os valores mais frequêntes se encontra de -2 a 2.
 <br>
 Agora para testar a normalidade dos resíduos será usado o teste de Shapiro-Wilk que possui as seguintes hipóteses
@@ -418,11 +448,44 @@ Temos que com 95% de confiança, $\beta_0$ está entre 12.80965603 e 13.55748683
 
 &emsp;&emsp; (a) Escreva a equação da reta ajustada;
 
+A equação da reta é dada por $y = 83.074 -1.1848x$, possuindo o seguinte gráfico,
+
+```{r}
+curve( 83.074 -1.1848*x, 0, 5, lwd =2, col = 'red')
+```
+<br><br>
+
 &emsp;&emsp; (b) Encontre um intervalo de confiança de 95%, para os coeficientes da reta ajusta;
+
+```{r}
+
+
+help(confint)
+IC <- matrix(c(83.074 -qnorm(0.975)*6.5930, 83.074 +qnorm(0.975)*6.5930,
+         -1.1848-qnorm(0.975)*0.1258, -1.1848+qnorm(0.975)*0.1258),
+       nrow = 2, byrow = T,dimnames =  list('  ' = c('Intercept', 'x'), ' ' = c('2.5%', '97.5%')) )
+IC
+```
+
+<br><br>
+
 
 &emsp;&emsp; (c) Verifique se o modelo contribui para explicar a variável resposta. Está adequado? Justifique;
 
+Temos o $p$ é inferior a 0.001 no teste t para ambas variáveis, assim elas são significativas para explicar a variável resposta, assim como o $p$ da estatística F indíca, sendo também menor que 0.001
+<br><br>
+
+
 &emsp;&emsp; (d) Encontre a estimativa da variância residual;
+
+
+Pegando da tabela Anova temos que $SQE = 80,6$. <br>
+
+Sabendo que a variância dos resíduos pode ser calculada por $\frac{SQE}{Df}$,
+
+$$Var(e_i) = \frac{SQE}{Df} = \frac{80.6}{7} =  11.51429$$
+
+
 
 <br><br>
 
@@ -911,6 +974,7 @@ O Ajuste não parece ter melhorado muito, e já realizado todos os testes para v
 
 summary(modelo2)
 
+
 ```
 Olhando o $\bar R^2$ aumentou de 0.4835 para 0.5075, o intercepto não foi significativo, e a razão foi significativa a 99.99%. 
 <br><br>
@@ -920,6 +984,7 @@ Olhando o $\bar R^2$ aumentou de 0.4835 para 0.5075, o intercepto não foi signi
 Por não haver uma grande diferença no ajuste dos modelos, será optado pelo primeiro sem a transformação.
 
 ```{r}
+
 ICs <- confint(modelo1)
 
 y.pred      = predict(modelo1)
@@ -930,20 +995,45 @@ nomes       = list(NULL,c("y.predito","Linf.IC","Lsup.IC","Linf.IP","Lsup.IP"))
 dimnames(m) = nomes
 R2 <- summary(modelo1)$adj.r.squared
 #--- Grafico do ajuste completo ---#
-dev.off()
+
 matplot(dados$razao,m,lty=c(1,2,2,3,3),type="l",col=c(1,2,2,4,4),bty="n",main="",
         xlab="Razão molar",ylab="Viscosidade")
 points(dados$razao,dados$viscosidade, pch=20)
 legend('bottomleft', c("Regressao","Confianca","Predicao"),
        bty="n", cex=0.8, lty=1:3, col=c(1,2,4))
-text(6,35, "Reta estimada: Y = 0.8781 -0.5548X", cex=0.8)
-text(6,34, "R? = 0.4834", cex=0.8)
+text(0.87,1, "Reta estimada: Y = 0.8781 -0.5548X", cex=0.8)
+text(0.778,0.9, "R² = 0.4834", cex=0.8)
 ```
+<br>
+Temos o intervalo de predicao maior que o intervalo de confiança, os dados ficam dois foras do intervalo de confiança, um deles ficando bem na borda do intervalo, assim tendo 25% dos dados foram o IC, o que é bem ruim.
 
 <br><br>
 &emsp;&emsp; (c) Apresente um intervalo de predição para uma viscosidade de 0.95.
-
 <br>
+
+
+Sabendo que o intervlo é dado por,
+
+$$IP[Y_h, 1- \alpha]: \hat Y_h \pm
+    t_{(n-2, \alpha/2)}\sqrt{\left[1 + \frac 1 n + \frac{(X_i - \bar X)^2}{S_{xx}}\right]QME}$$
+
+
+```{r}
+n   <- nrow(dados)
+Sxx <- sum(dados$razao^2) -sum(dados$razao)^2/n
+QME <- sum(dados$viscosidade - y.pred)^2 / (n - 2)
+EP  <- -qt(0.95, n - 2) *sqrt(
+    (1 + 1/n + (dados$razao - mean(dados$razao)^2)/(Sxx))*QME
+  )
+
+IP <- list(dados$viscosidade - EP, dados$viscosidade + EP)
+dados$viscosidade - EP
+```
+
+<br><br>
+
+
+
 
 <br><br>
 
@@ -957,3 +1047,152 @@ text(6,34, "R? = 0.4834", cex=0.8)
 \textrm{Y}      &2&2&1&1&0.1&1&0.1&0.1&1&1&12&10&14&17&11&7&9&15&8&10&\\
 \hline
 \end{array}
+
+
+<br><br>
+
+Primeiramente, buscando verificar visualmente a relação linear dos dados
+
+```{r}
+x <- c(rep(1, 5), rep(2, 5), rep(3, 5), rep(4, 5))
+y <- as.numeric(c(2, 2, 1, 1, 0.1, 1, 0.1, 0.1, 1, 1, 12, 10, 14, 17, 11, 7, 9, 15, 8, 10))
+dados <- data.frame(x = x, y = y)
+
+plot(x = dados$x, y = dados$y,
+     xlab = 'Dose nutricional na ração (%)',
+     ylab = 'Taxa de crescimento',
+     main = 'Gráfico de dispersão da taxa de crescimento\n pela dose nutricional')
+
+```
+<br>
+No eixo x temos uma escala discreta, enquanto no eixo y temos uma contínua, além disso a relação linear não parece muito forte.
+<br><br>
+
+Criando um modelo linear,
+
+```{r}
+modelo1 <- lm(y~x, data= dados)
+summary(modelo1)
+```
+O modelo é a equação $-3.36 + 3.79x$, temos que apenas a variável x é significativa, sendo ao nível de 0.0001, temos um $\bar R^2 = 0.5422$. <br>
+
+Visualizando o ajuste temos,
+
+```{r}
+plot(x = dados$x, y = dados$y,
+     xlab = 'Dose nutricional na ração (%)',
+     ylab = 'Taxa de crescimento',
+     main = 'Gráfico de dispersão da taxa de crescimento\n pela dose nutricional')
+curve(modelo1$coefficients[1] + modelo1$coefficients[2]*x, add = T, col = 'red', lty = 1, lwd = 2)
+```
+
+A reta passa nos pontos com valor 1 no x e nos pontos com valor 4 no eixo x, nos outros ela passa ao lado.
+<br><br>
+Agora verificando os pressupostos do modelo, <br>
+
+**Normalidade dos resíduos** <br>
+
+Para isso, será usado o teste de Shapiro-Wilk, que possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \textrm{Os dados seguem uma distribuição normal.}\\
+H_{1}: \textrm{Os dados não se distribuem como uma normal.}
+    \end{cases}
+$$
+<br>
+```{r}
+shapiro.test(modelo1$residuals)
+```
+Assim, utilizando 95% de confiança, não rejeitamos $H_0$, temos que os resíduos seguem uma distribuição normal.
+<br><br>
+
+**Homocedastidade**
+
+Para isso, o teste de Goldfeld-Quandt será usado, o qual possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \textrm{A homocedasticidade está presente.}\\
+H_{1}: \textrm{A homocedasticidade não está presente.}
+    \end{cases}
+$$
+
+```{r}
+library(lmtest)
+
+gqtest(modelo1)
+```
+Usando 95% de confiança rejeitamos $H_0$, ou seja, a homocedasticidade não está presente nas variáveis independentes.
+<br><br>
+
+**Resíduos independentes e não correlacionados**<br>
+<br>
+
+
+Para testar se existe de fato não correlação será usado o teste de Durbin-Watson, que possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \rho = 0,    &&\textrm{Existe independência}\\
+H_{1}: \rho \not= 0,&&\textrm{Não existe independência}
+    \end{cases}
+$$
+
+```{r}
+library(car)
+durbinWatsonTest(modelo1)
+```
+<br>
+Assim, usando 95% de confiança, rejeitamos $H_0$, ou seja, não existe independência nos resíduos.
+<br><br>
+
+Assim, dois dos pressupostos furaram para esse modelo, o de independência de resíduos e o de homecedasticidade, assim o modelo não sendo confiável.
+
+<br><br>
+
+Com isso, se conclui que o modelo linear simples não é adequado para os dados.
+<br><br>
+
+Buscando transformar os dados para tentar aplicar novamente o modelo, será usado Box-Cox, sendo a transformação a seguinte:<br>
+
+$$
+    \begin{cases}
+Y \rightarrow \frac{Y^\lambda - 1}{\lambda}&,    & \lambda \not = 0;\\
+\\
+Y \rightarrow \ln(Y)&,& \lambda = 0.
+    \end{cases}
+$$
+
+<br><br>
+```{r}
+library(MASS)
+
+w = boxcox(x ~ y, data=dados, plotit=T)
+max(w$y)
+posicao = which.max(w$y); posicao
+w$y[posicao]
+w$x[posicao]
+lambda = w$x[posicao]
+dados$y2 = (dados$y^(lambda)-1)/lambda
+modelo2 <- lm(y2 ~ x, data = dados)
+
+plot(x = dados$x, y = dados$y2,
+     xlab = 'Dose nutricional na ração (%)',
+     ylab = 'Taxa de crescimento',
+     main = 'Gráfico de dispersão da taxa de crescimento\n pela dose nutricional')
+curve(modelo2$coefficients[1] + modelo2$coefficients[2]*x, add = T, col = 'red', lty = 1, lwd = 2)
+```
+<br>
+Lambda foi igual a 0.7070, o intervalo contém o zero, no entanto será usado lambda = 0.707 pelo baixo tamanho da amostra.
+<br>
+Agora verificando os pressupostos,
+
+```{r}
+shapiro.test(modelo2$residuals)
+gqtest(modelo2)
+durbinWatsonTest(modelo2)
+```
+Agora o modelo atendeu o pressuposto de homocedasticidade, no entanto furou os de normalidade de resíduos e indepedência de resíduos.
+<br><br>
+Assim, mesmo transformando os dados os pressupostos não foram atendidos, ou seja, de fato o modelo linear simples não é adequado para o ajuste dos dados.
