@@ -778,6 +778,13 @@ A reta se ajusta bem aos dados, visto esses terem uma alta relação linear. <br
 (f) Calcule a Soma de Quadrados Total (SQT), a partir do cálculo da variância amostral de y;
 <br>
 
+```{r}
+sum((cereais$area - mean(cereais$area))^2)
+```
+
+
+$$SQT = \sum^n_{i=1}(Y_i - \bar Y)^2 = 101404176$$
+
 <br><br>
 
 (g) Calcule o valor da Soma de Quadrados de Regressão (SQReg);
