@@ -140,7 +140,7 @@ plot(x, y,
 ```
 <br>
 Os dados se concentram em torno do -2, devido terem sido gerados para isso, pois $Y = −2 + 0.5x + \epsilon$, e $x$ possui média zero e distribuição normal, no entanto mesmo a função $Y$ sendo de uma reta, os dados não distribuem tão bem na forma de uma reta, possivelmente, devido a variância dos resíduos ser relativamente alta $\sigma^2 = 9$.
-
+<br><br>
   
   
 (c) Estime os parâmetros do modelo via MMQ e pela forma matricial, isto é,
@@ -148,7 +148,7 @@ Os dados se concentram em torno do -2, devido terem sido gerados para isso, pois
   
 Via MMQ, temos que $\hat \beta_0 = \bar y - \hat \beta_1 \bar x$ &emsp; e &emsp; $\hat \beta_1 = \frac{\sum^n_{i=1}(x_i - \bar x)(y_i - \bar y)} {\sum^n_{i=1}(x_i - \bar x)^2}$
 <br>
-Assim, para calcular $\bar \beta_1$, temos $\bar x = 0.04636292$ e $\bar y = -2.176858 $, assim, conseguimos um $\beta_1 = 0.26286$ e usando esse para calcular $\beta_0$ temos que esse vale $-2.189045$. <br> <br>
+Assim, para calcular $\bar \beta_1$, temos $\bar x = 0.04636292$ e $\bar y = -2.176858$, assim, conseguimos um $\beta_1 = 0.26286$ e usando esse para calcular $\beta_0$ temos que esse vale $-2.189045$. <br> <br>
 
 <div style="page-break-after: always;"></div>
 
@@ -164,7 +164,7 @@ plot(x, y,
      ylab = 'Y',
      main = 'Gráfico de dispersão dos dados simulados'
      )
-curve(beta_0 + beta_1*x, add =T, col = 'red')
+curve(beta_0 + beta_1*x, add =T, col = 'red', lwd = 2)
 
 ```
 
@@ -219,9 +219,8 @@ Agora calculando $\hat \beta$ de fato,
 ```{r}
 solve(t(matriz_x) %*% matriz_x) %*% t(matriz_x) %*% matriz_y
 ```
-Assim temos que $\beta_0 = -2.189045$ e $\beta_1 = 0.262860$, e a reta de regressão  $-2.189045 + 0.262860x$, o mesmo valor calculado de forma analítica. <br>
-  
-plotando essa função teríamos a seguinte reta,
+Assim temos que $\beta_0 = -2.189045$ e $\beta_1 = 0.262860$, e a reta de regressão  $-2.189045 + 0.262860x$, o mesmo valor calculado de forma analítica. Plotando essa função teríamos a seguinte reta, <br>
+
 ```{r}
 betas <- solve(t(matriz_x) %*% matriz_x) %*% t(matriz_x) %*% matriz_y
 
@@ -230,7 +229,7 @@ plot(x, y,
      ylab = 'Y',
      main = 'Gráfico de dispersão dos dados simulados'
      )
-curve(betas[1] + betas[2]*x, add =T, col = 'red')
+curve(betas[1] + betas[2]*x, add =T, col = 'red', lwd = 2)
 ```
 <br><br>
 
@@ -244,7 +243,7 @@ hist(erro,
 
 ```
 <br>
-Podemos vizualizar que os valores mais frequêntes se encontra de -2 a 2.
+Podemos vizualizar que os valores mais frequentes se encontram de -2 a 2, com caudas indo de -6 a -2 e de 2 a 8.
 <br>
 Agora para testar a normalidade dos resíduos será usado o teste de Shapiro-Wilk que possui as seguintes hipóteses
 
@@ -305,6 +304,7 @@ plot(dados$Temperatura, dados$Tempo,
 O gráfico de dispersão é no eixo tempo contínuo e no eixo temperatura discreto, os pontos formam, aparentemente, uma reta.
 
 <br><br>
+
 (b) Estime a média, desvio-padrão, variância e coeficiente de variação para a resposta (Tempo de reação), considerando-a como normalmente distribuiída (Sugestão: Utilize a função fitdistr da livraria MASS do R)
 
 ```{r}
@@ -330,8 +330,7 @@ print(estimativas)
 
 ```
 
-Estimando as estatísticas via o *fitdistr*, temos um coeficiente de variação baixo para todas temperaturas, ou seja, a média pode ser usada para representar os dados, e temos o comportamento esperado de acordo com o gráfico para as médias, conforme a temperatura diminui a média do tempo aumenta.
-
+Estimando as estatísticas via o *fitdistr*, temos um coeficiente de variação baixo para todas temperaturas, ou seja, a média pode ser usada para representar os dados, e temos o comportamento esperado de acordo com o gráfico para as médias, conforme a temperatura diminui a média do tempo aumenta, quanto a dispersão ela é maior nas temperaturas de 50 a 70 graus.
 
 <br><br>
 
@@ -359,7 +358,7 @@ estimativas            <- data.frame(t(estimativas))
 estimativas
 
 ```
-Sem realizar testes, eu diria que, aparentemente, não há heterocedasticidade, pois, a variância tem um aumento na temperatura 50, 60 e 70, mas depois disso ela abaixa novamente, não explodindo conform a variável x aumenta, como é comum no caso de heterocedasticidade. No entanto, para verificar se a variação da variância pode ser considerada alta o suficiente e por conseguinte não existir homocedasticidade, é necessário fazer os testes específicos para isso.
+Sem realizar testes, eu diria que, aparentemente, não há heterocedasticidade, pois, a variância tem um aumento na temperatura 50, 60 e 70, mas depois disso ela abaixa novamente, não explodindo conforme a variável x aumenta, como é comum no caso de heterocedasticidade. No entanto, para verificar se a variação da variância pode ser considerada alta o suficiente e por conseguinte não existir homocedasticidade, é necessário fazer os testes específicos para isso.
 
 <br><br>
 
@@ -390,6 +389,7 @@ gqtest(modelo1)
 Assim, considerando uma confiança de 95%, não rejeitamos $H_0$, ou seja, a homocedasticidade está presente.
 
 <br><br>
+
 (e) Teste a significância dos parâmetros em nível de 5%;
 
 Para testar a significância de $\beta_1$, temos dois passos a serem seguidos,
@@ -420,10 +420,11 @@ tc <- (modelo1$coefficients[2] - 0)/((sum(residuo^2))/length(residuo)/ sum((Temp
 
 #qt(0.975, 33)
 ```
+<br><br>
 
 (f) Teste a normalidade nos resíduos;
 
-Para testar a normalidade dos resíduos será usado o teste de Shapiro-Wilk, quue possui as seguintes hipóteses,
+Para testar a normalidade dos resíduos será usado o teste de Shapiro-Wilk, que possui as seguintes hipóteses,
 
 $$
     \begin{cases}
@@ -435,7 +436,7 @@ $$
 ```{r}
 shapiro.test(modelo1$residuals)
 ```
-Assim, com 95% de confiança não rejeitamos $H_0$, ou seja, os resíduos do modelo seguem a distribuição normal, assim esses pressuposto está sendo seguido.
+Assim, com 95% de confiança não rejeitamos $H_0$, ou seja, os resíduos do modelo seguem a distribuição normal, assim esse pressuposto está sendo seguido.
 
 <div style="page-break-after: always;"></div>
 
@@ -576,7 +577,7 @@ modelo_bical <- lm(Y ~ X, data = bical)
 
 **Modelo Araxá**: $Y = 16.35 + 34.58 \cdot X$
 
-O ajuste aos dados,
+O ajuste aos dados é o seguinte,
 
 ```{r}
 plot(x = araxa$X, y = araxa$Y,
@@ -587,10 +588,11 @@ curve(modelo_araxa$coefficients[1] + modelo_araxa$coefficients[2]*x ,  col = 're
 
 
 ```
+Aparentemente, o modelo consegue explicar os pontos, esses estando bem próximos a reta. <br>
 
 **Modelo Patos**: $Y = 19.62 + 30.19 \cdot X$
 
-O ajuste aos dados,
+O ajuste aos dados é o seguinte,
 
 ```{r}
 plot(x = patos$X, y = patos$Y,
@@ -601,10 +603,11 @@ curve(modelo_patos$coefficients[1] + modelo_patos$coefficients[2]*x ,  col = 're
 
 
 ```
-
+Aparentemente, o modelo consegue explicar os pontos, esses estando em torno da reta. 
+<br>
 **Modelo Bicálcico**: $Y = 15.27 + 61.40 \cdot X$
 
-O ajuste aos dados,
+O ajuste aos dados é o seguinte,
 
 ```{r}
 plot(x = bical$X, y = bical$Y,
@@ -615,9 +618,11 @@ curve(modelo_bical$coefficients[1] + modelo_bical$coefficients[2]*x ,  col = 're
 
 
 ```
+Aparentemente, o modelo consegue explicar os pontos, esses estando bem próximos a reta.
+
 <br>
 
-Assim os 3 modelos conseguiram ajustar, aparentemente, bem os dados, visto que esses se distribuim em forma de reta.
+Assim os 3 modelos conseguiram se ajustar, aparentemente, bem aos dados, visto que esses se distribuim em forma de reta.
 
 <br>
 
@@ -633,13 +638,13 @@ Para todos modelos, temos que tanto o intercepto quanto o X é significativo usa
 
 <br><br>
 
-(b) Calcule a disponibilidade relativa do Fósgoro nos dois Fosfatos de rocha e decida pelo melhor;
+(b) Calcule a disponibilidade relativa do Fósforo nos dois Fosfatos de rocha e decida pelo melhor;
 
 Temos que
 
 $$DR_{araxa} =  \beta_1^{araxa} / \beta_1^{Bicalcico} = \frac{34.57651}{61.39689} = 0.5631639$$
 $$DR_{patos} =  \beta_1^{patos} / \beta_1^{Bicalcico} = \frac{30.18677}{61.39689} = 0.4916661$$
-Assim, a rocha de Araxá tem um $DR$ maior que a de Patos de Minas, e por consequência possui mais Fósforo.
+Assim, a rocha de Araxá tem um $DR$ maior que a de Patos de Minas, e por consequência possui mais Fósforo, sendo melhor.
 
 
 ```{r}
@@ -647,7 +652,7 @@ DR_araxa <- modelo_araxa$coefficients[2] / modelo_bical$coefficients[2]
  # Quanto mais melhor
 DR_patos <- modelo_patos$coefficients[2] / modelo_bical$coefficients[2]
 ```
-
+<br><br>
 
 
 (c) Trace as retas ajustadas aos dados simultaneamente.
@@ -691,7 +696,7 @@ plot(x = cereais$ano, y = cereais$area,
      main = 'Gráfico de dispersão do ano pela área agrícola')
 ```
 <br>
-No gráfico acima, podemos verificar que os pontos de superfície e ano formam uma reta.
+No gráfico acima, podemos verificar que os pontos de superfície e ano formam uma reta, uma aparente correlação linear negativa.
 <br><br>
 
 (b) A partir do gráfico obtido do item anterior, sugira um valor para o coeficiente de correlação entre superfície agrícola e ano. Depois, utilize os comandos do R para calcular esse mesmo coeficiente de correlação. Comente o seu significado;
@@ -731,7 +736,9 @@ curve(modelo1$coefficients[1] + modelo1$coefficients[2]*x, add=T,
 summary(modelo1)
 ```
 <br>
-Ambos parâmetros são significativos a 99.99%, temos que o Intercepto = 523001.7, ele é bem alto devido o ano estar na casa de $10^3$ diminuindo bastante esse valor, quanto ao ano = -258.8, ele é negativo assim diminuindo o valor do intercepto conforme o ano aumenta.
+Ambos parâmetros são significativos a 99.99%, temos que o Intercepto = 523001.7, ele é bem alto devido o ano estar na casa de $10^3$ diminuindo bastante esse valor, quanto ao ano = -258.8, ele é negativo assim diminuindo o valor do intercepto conforme o ano aumenta. 
+
+Pensando no significado puro, o intercepto ou $\beta_0$ seria o valor em que a reta corta o eixo $y$ em $x=0$, enquanto o *ano* ou $\beta_1$ é o coeficiente angular da reta, o parâmetro que define o ângulo da reta.
 <br><br>
 
 (d) Comente a qualidade da reta obtida, calculando o respectivo coeficiente de determinação e interpretando o valor obtido;
@@ -741,21 +748,22 @@ Temos que o coeficiente de determinação $(R^2)$ pode ser usado para testar a q
 $$R^2 = \frac{SQReg}{SQT} = 
 \frac{\sum^n_{i=1}(\hat Y_i - \bar Y)^2}{\sum^n_{i=1} (Y_i - \bar Y)^2}$$
 <br>
-```{r}
-R2 <- sum((modelo1$fitted.values - mean(cereais$area))^2)/sum((cereais$area - mean(cereais$area))^2)
-R2
-```
+
 $$R^2 = \frac{97924480}{101404176} =  0.965684$$
+```{r, echo = F }
+R2 <- sum((modelo1$fitted.values - mean(cereais$area))^2)/sum((cereais$area - mean(cereais$area))^2)
+#R2
+```
 
 No nosso modelo, temos que $R^2 =  0.9656849$, agora calculando o coeficiente de determinação ajustado, usando
 <br>
 $$\bar R^2 = R^2 - \frac{1}{n-2}(1 - R^2)$$
 $$\bar R^2 = 0.9656849^2 = \frac{1}{35-2}(1 - 0.9656849) = 0.9642551$$
-```{r}
+```{r, echo = F}
 R2 - (1)/(nrow(cereais)-2) * (1 - R2)
 ```
 <br>
-Temos que $\bar R^2 = 0.9642551$, lembrando que $0 < R^2 < 1$ e quanto mais perto de 1 o $R$, melhor o ajuste do modelo, assim de acordo apenas com o coeficiente de determinação ajustado o modelo está explicando quase perfeitamente os dados.
+Temos que $\bar R^2 = 0.9642551$, lembrando que $0 < R^2 < 1$ e quanto mais perto de 1 o $R$, melhor o ajuste do modelo, assim de acordo apenas com o coeficiente de determinação ajustado o modelo está explicando quase perfeitamente (96,42%) os dados .
 
 <br><br>
 
@@ -773,18 +781,18 @@ curve(modelo1$coefficients[1] + modelo1$coefficients[2]*x, add=T,
 ```
 <br>
 
-A reta se ajusta bem aos dados, visto esses terem uma alta relação linear. <br><br>
+A reta se ajusta bem aos dados, visto esses terem uma alta relação linear, com os pontos bem próximos a reta <br><br>
 
 (f) Calcule a Soma de Quadrados Total (SQT), a partir do cálculo da variância amostral de y;
 <br>
 
-```{r}
-sum((cereais$area - mean(cereais$area))^2)
-```
+
 
 
 $$SQT = \sum^n_{i=1}(Y_i - \bar Y)^2 = 101404176$$
-
+```{r}
+#sum((cereais$area - mean(cereais$area))^2)
+```
 <br><br>
 
 (g) Calcule o valor da Soma de Quadrados de Regressão (SQReg);
@@ -792,7 +800,7 @@ $$SQT = \sum^n_{i=1}(Y_i - \bar Y)^2 = 101404176$$
 
 $$SQReg = \sum^n_{i=1}(\hat Y_i - \bar Y)^2 = 97924480 $$
 ```{r}
-sum((modelo1$fitted.values - mean(cereais$area))^2)
+#sum((modelo1$fitted.values - mean(cereais$area))^2)
 ```
 
 <br><br>
@@ -810,13 +818,13 @@ $$SQE = 3479696$$
 <br>
 Calculando diretamente pelos resíduos,
 
-```{r}
+```{r, echo = T}
 sum(modelo1$residuals^2)
 ```
 <br>
 Tem a diferença de 1 unidade que é devido a aproximação. <br><br>
 
-(i) Altere as unidades de medida da variável área, de $km^2$ para hectares(*area* $\rightarrow$ *area* $\cdot$ 100). Ajuste novamente a regressão, após efetuar essta alteração. O que aconteceu aos parâmetros estimados e ao coeficiente de determinação $R^2$? Comente;
+(i) Altere as unidades de medida da variável área, de $km^2$ para hectares (*area* $\rightarrow$ *area* $\cdot$ 100). Ajuste novamente a regressão, após efetuar essta alteração. O que aconteceu aos parâmetros estimados e ao coeficiente de determinação $R^2$? Comente;
 
 ```{r}
 cereais$hectares <- cereais$area * 100
@@ -829,7 +837,7 @@ modelo2 <- lm(hectares ~ ano, data = cereais)
 <br>
 Ajustando o modelo da área em hectares sendo explicado pelo ano, temos $Y = 52300171 - 25876\cdot X$. 
 
-Comparando com o modelo da área em $km^2$ sendo explicado pelo ano, tínhamos $Y = 523001.71 -258.76 \cdot X$, ou seja, a variável explicativa foi multiplicada por 100 e coeficientes do modelo também.
+Comparando com o modelo da área em $km^2$ sendo explicado pelo ano, tínhamos $Y = 523001.71 -258.76 \cdot X$, ou seja, a variável explicativa foi multiplicada por 100 e os coeficientes do modelo também.
 <br>
 
 Agora olhando o modelo ajustado aos pontos graficamente,
