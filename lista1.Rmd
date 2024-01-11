@@ -1039,7 +1039,7 @@ modelo2 <- lm(y2 ~ razao, data = dados)
 ```
 <br>
 
-Daí temos que o $\lambda = 1.636364$, com o intervalo de confiança não contendo o zero por pouco.
+Daí temos que o $\lambda = 1.636364$, com o intervalo de confiança não contendo o zero por pouco. Assim, nossa transformação será $Y \rightarrow \frac{Y^{1.6363}- 1}{1.6363}$.
 
 ```{r}
 
@@ -1063,10 +1063,12 @@ O Ajuste não parece ter melhorado muito, e já realizado todos os testes para v
 
 summary(modelo2)
 
-
 ```
 Olhando o $\bar R^2$ aumentou de 0.4835 para 0.5075, o intercepto não foi significativo, e a razão foi significativa a 99.99%. 
 <br><br>
+Agora em mais uma tentativa, o intercepto será tirado do modelo.
+<br><br>
+
 
 <div style="page-break-after: always;"></div>
 
