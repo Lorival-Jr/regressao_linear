@@ -50,16 +50,100 @@ X'y = \begin{bmatrix}
 99.5\\
 \end{bmatrix};
 
-y'y = 465.5$
+y'y = 465.5
 
 \end{equation}
 
+<br><br>
+
 (a) Determine a equação de regressão estimada considerando um MRLM do tipo: $Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \epsilon$;
 
-(b) Determinea $SQE = y'y - \hat \beta'X'y $ e aprensente a tabela de ANOVA;
+Temos que $\hat \beta = (X'X)^{-1} X'Y$, como já temos X'X, invertendo-o,
 
+```{r}
+xx <- matrix(c(8,15,12,
+               15,33,24,
+               12,24,24), byrow = T, nrow = 3)
+
+xy <- matrix(c(57,121,99.5),)
+
+yy <- 464.5
+
+inv <- round(solve(xx),4 )
+
+betas <- inv%*%xy
+
+
+```
+
+\begin{equation}
+(X'X)^{-1} =  \begin{bmatrix}
+1.0000&-0.3333&-0.1667\\
+-0.3333&0.2222&-0.0556\\
+-0.1667&-0.0556&0.1806 \\
+\end{bmatrix};
+\end{equation}
+
+Agora calculando a matriz $\beta$,
+
+\begin{equation}
+\beta =  \begin{bmatrix}
+0.0840\\
+2.3559\\
+1.7402\\
+\end{bmatrix};
+\end{equation}
+
+<br><br>
+
+Assim a equação de regressão é $0.0840 + 2.3559x_1 + 1.7402x_2 + \epsilon$.
+
+(b) Determine a $SQE = y'y - \hat \beta'X'y $ e aprensente a tabela de ANOVA;
+
+```{r}
+SQE   <- yy - t(betas) %*% xy
+SQT   <- yy - yy/30
+SQReg <- SQT - SQE
+
+```
+
+$SQE = y'y - \hat \beta'X'y = 464.5 - 463.0047 = 1.4953$
+
+$SQT = y'y - \frac{y'y}{n} = 465.5 - 15.4833 = 449.0167$
+
+$SQReg = SQT - SQE = 449.0167 - 1.4953 =  447.5213$
+
+\hline
+\begin{array}{ccccc}
+\hline
+\textrm{Causa de Variação}   & GL & SQ & QM F        \\
+\hline
+\textrm{Regressão} & 2 & 447.5213 & 223.7606& 4040.4586   \\
+\textrm{Erro}      & 27& 1.4953   & 0.05538  & \\
+\hline
+\textrm{Total}     & 29& 449.0167 & 15.4833 & \\
+\hline
+\end{array}
+
+<br><br>
 (c) Realize o teste F de ajustamento global e conclua.
 
+O teste possui as seguintes hipóteses,
+
+
+$$
+    \begin{cases}
+H_0: \beta_1 = \beta_2 = ... = \beta_p = 0\\
+H_1: \textrm{nem todos os \beta_j (j = 1,2,...,p) são iguais a zero}
+
+    \end{cases}
+$$
+
+No qual testamos, se $F_{H_0} >F_{\alpha, p-1, n-p}$
+
+Usando $\alpha = 0.05$, $F_{0.95, 2, 27}$, o $F_{H_0} = 4040$ é maior que o F tabelado. Assim, rejeitamos $H_0$
+
+<br><br>
 
 2. Analogamente ao exercício anterior, considere n = 10, p = 3, y'y = 56 e as equações normais:
 
@@ -90,11 +174,132 @@ Encontre os estimadores de Mínimos Quadrados (EMQ) para $\beta$ e para $\sigma^
 
 (a) Ajuste a estes dados um MRLM do tipo: $Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \epsilon$ por meio do MMQ e compare com as estimativas obtidas via comando *lm* do R;
 
+$\hat \beta = (X'X)^{-1}X'Y$
+
+$\hat \beta = $
+
+```{r}
+dados <- data.frame(y = c(12,13,3,3,11,19,1,14,15,17,2,15),
+                    x1= c(31,16,29,19,27,21,24,11,26,18,12,3),
+                    x2= c(4,5,3,0,2,6,2,3,6,6,1,5))
+
+dados
+
+n <- nrow(dados)
+
+xx <- matrix(c(n, sum(dados$x1), sum(dados$x2),
+               sum(dados$x1), sum(dados$x1^2), sum(dados$x1 * dados$x2),
+               sum(dados$x2), sum(dados$x1 * dados$x2), sum(dados$x2^2)), nrow = 3, byrow= 3)
+
+print("Temos que X'X")
+print(xx)
+
+print("E que X'Y,")
+print(xy)
+
+xy <- matrix(c(sum(dados$y), sum(dados$x1 * dados$y), sum(dados$x2 * dados$y)))
+
+beta <- solve(xx) %*% xy
+
+
+print('Daí temos que os betas são,')
+
+print(beta)
+```
+<br>
+
+Agora comparando com o do *lm* do R
+
+```{r, echo = TRUE}
+lm(dados$y ~ dados$x1 + dados$x2)$coefficients
+```
+<br>
+
+Os valores são identicos.
+
+<br><br>
+
+
 (b) Apresente graficamente: matriz de correlações múltiplas, o diagrama de dispersão e o ajuste no hiperplano;
+<br>
+
+A matriz de correlação múltipla é a seguinte,
+
+```{r}
+library(corrplot)
+
+corrplot(cor(dados), method = 'color',
+         type = 'lower'  ,
+         addCoef.col ='black',tl.col="black",
+         number.cex = 0.8, diag=T)
+
+```
+
+Temos que $Y$ tem correlação fraca com $X_1$ e forte com $X_2$, e $X_1$ não tem correlação com $X_2$.
+
+<br>
+
+O diagrama de dipersão com o ajuste do hiperplano é,
+
+```{r}
+library(scatterplot3d)
+i = 15 # angulo de observacao
+graph = scatterplot3d(dados$x1,dados$x2,dados$y,
+                      angle=i, pch=19, cex.symbols=0.9,
+                      color = 4,
+                      xlab="Capital investido",
+					            ylab="Gasto em publicidade",
+                      zlab="Lucro anual")
+
+# Plano estimado
+reg <- lm(dados$y ~ dados$x1 + dados$x2)
+graph$plane3d(reg, col="red")
+```
+
+<br><br>
+
 
 (c) Realize a ANOVA, apresente o $R^2$ do ajuste e interprete o seu valor;
 
+A tabela da ANOVA para o modelo foi a seguinte,
+```{r}
+anova(reg)
+```
+
+<br>
+Nela $X_2$ teve um SQ e QM maior que $X_1$, explicando mais da variável resposta.
+
+<br>
+
+Quanto ao $R^2$,
+
+```{r}
+summary(reg)
+```
+Foi obtido um $R^2$ de 0.7395 e um ajustado de 0.6816, assim, o modelo está começando a explicar bem os dados (68%), no entanto, por ter poucos dados o modelo pode não ser representativo.
+
+<br>
+
+
 (d) Os dados fornecem evidências suficientes para indicar que o modelo contribui significativamente para a predição de Y para valores médios das variávies explicativas? Em caso afirmativo, apresente-o juntamente com seu IC;
+<br>
+
+Para isso, fazendo o teste de ajustamento global para verificar se os $\beta_j$ são significativos para explicar os dados.
+
+```{r}
+summary(aov(dados$y ~ dados$x1 + dados$x2))
+```
+Temos que $SQReg = 318.7 + 14.7 = 333.4$, $QMReg = \frac{333.4}{1}$, e o $QME = 13.1$, daí $F=\frac{333.4}{13.1}$
+
+<br>
+
+Enquanto o F tabelado, $F_{p-1,n-p} = 4.2564$
+
+Assim, rejeitamos $H_0$.
+
+```{r}
+qf(.95, 2, 9)
+```
 
 (e) Teste as hipóteses $H_0: \beta_j$ versus $H_a: \beta_j \not = 0, j = 1,2$.
 
@@ -113,18 +318,69 @@ Encontre os estimadores de Mínimos Quadrados (EMQ) para $\beta$ e para $\sigma^
 
 (a) Ajuste um MRLM a esses dados do tipo: $Y=\beta_0 + \beta_1X + \beta^2 + \epsilon$;
 
+```{r}
+dados <- data.frame(x = 1:10,
+                    y = c(.08, .18, .32, .53, .88, 1.3, 1.95, 2.8, 3.9, 4.6))
+
+dados$x2 <- dados$x^2
+
+fit <- lm(y ~ x + x2, data = dados)
+summary(fit)
+```
+Temos que o modelo estimado foi $Y = 0.274 -0.1987X + 0.0642X^2$.
+
+
 (b) Apresente graficamente o ajuste;
 
+```{r}
+library(scatterplot3d)
+i = 15 # angulo de observacao
+graph = scatterplot3d(dados$x,dados$x2,dados$y,
+                      angle=i, pch=19, cex.symbols=0.9,
+                      color = 4,
+                      xlab="Tempo de exposição (em semanas)",
+					            ylab="Tempo (em semanas^2)",
+                      zlab="Grau de corrosão")
+
+# Plano estimado
+
+graph$plane3d(fit, col="red")
+```
+
+
 (c) Realize a ANOVA;
+
+```{r}
+anova(fit)
+```
+
+Tanto $x$ quanto $x^2$ foram significativos, os resíduos tendo baixo QME comparando com o QMReg.
+
 
 (d) Os dados fornecem evidências suficientes para indicar que o modelo contribui significativamente
 para a predição de Y ?
 
+
+
 (e) Teste as hipóteses $H_0 : \beta_1 = 0$ versus $H_a : \beta_1 \not = 0$;
+
+```{r}
+summary(fit)
+```
+$\beta_1$ foi significativo, tento $t_0 = -3.725$ e um $p=0.0074$, assim usando um $\alpha = 0.05$ rejeitamos $H_0$, portanto $\beta_1 \not = 0$
+
 
 (f) Que porcentagem da variação total é explicada pelo modelo?
 
+Olhando o $R^2$ que é 0.9965 e o ajustado 0.9955, assim temos que o modelo explica 99.55% da variação total.
+
+
 (g) Apresente uma estimativa pontual e intervalar para $X_0 = 5.5$.
+
+```{r}
+predict.lm(fit, newdata = list(x=5.5, x2=5.5^2))
+```
+
 
 <br><br>
 
