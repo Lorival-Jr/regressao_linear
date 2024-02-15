@@ -377,9 +377,22 @@ Olhando o $R^2$ que é 0.9965 e o ajustado 0.9955, assim temos que o modelo expl
 
 (g) Apresente uma estimativa pontual e intervalar para $X_0 = 5.5$.
 
+A estimativa pontual pro valor é
 ```{r}
-predict.lm(fit, newdata = list(x=5.5, x2=5.5^2))
+xh       = 5.5 # valor novo
+data.new = data.frame(x=xh, x2=xh^2)
+
+predict(fit, data.new, se.fit=TRUE)$fit[[1]]
 ```
+<br>
+
+E o seu intervalo de confiança é o seguinte,
+
+```{r}
+pred.new = predict(fit, data.new, interval='confidence')
+pred.new
+```
+
 
 
 <br><br>
@@ -480,6 +493,19 @@ Y&X1&X2\\
 
 
 (a) Ajuste um MRLM que explique Y e função das variáveis explicativas;
+
+```{r}
+y <- c(189,203,222,234,261,204,212,223,246,273,
+       220,228,252,263,291,226,232,259,268,294)
+
+x1<- c(rep(seq(80, 160, 20),4))
+
+x2<- c(sort(rep(seq(10,25,5),5)))
+
+dados <- data.frame(y = y, x1 = x1, x2 = x2)
+
+```
+
 
 (b) Encontre um IC para o coeficiente da variável concentração no modelo ajustado;
 
