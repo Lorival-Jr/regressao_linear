@@ -157,6 +157,25 @@ $$
 
 Encontre os estimadores de Mínimos Quadrados (EMQ) para $\beta$ e para $\sigma^2$.
 
+<br>
+
+Resolvendo o sistema encontramos,
+
+$\beta_1 = 0, \beta_2 = 3, \beta_3 = 1$
+
+<br>
+
+E o estimador de $\hat \sigma^2 = \frac{Y'Y - \hat \beta'X'Y}{n- p} = QME$
+
+Portanto,
+
+```{r}
+beta  <- matrix(c(0,3,1), nrow =1)
+
+sigma <- (56 - beta %*% xy)/(10-3)
+```
+
+<br><br>
 
 3. Para se estudar a influência das variáveis capital investido ($X_1$) e gasto em publicidade ($X_2$) no lucro anual ($Y$) de empresas, foram observadas essas variáveis em doze empresas em um mesmo ano. Os seguintes resultados foram registrados, na unidade de R$ 100 mil.
 
@@ -303,6 +322,10 @@ qf(.95, 2, 9)
 
 (e) Teste as hipóteses $H_0: \beta_j$ versus $H_a: \beta_j \not = 0, j = 1,2$.
 
+```{r}
+summary(aov(dados$y ~ dados$x1 + dados$x2))
+```
+
 <br><br>
 
 4. Um experimento foi realizado para estudar a relação entre o grau de corrosão de um certo metal, Y, e o tempo de exposição (em semanas), $X$, desse metal à ação da acidez do solo. Foram obtidos os seguintes resultados apresnetados na Tabela a seguir,
@@ -360,6 +383,9 @@ Tanto $x$ quanto $x^2$ foram significativos, os resíduos tendo baixo QME compar
 (d) Os dados fornecem evidências suficientes para indicar que o modelo contribui significativamente
 para a predição de Y ?
 
+Temos que o $R^2=0.9965$ e o ajustado $0.9955$, assim o modelo conseguindo explicar quase perfeitamente a variação. Olhando para os testes t, tanto a variável $x$ quanto $x^2$ são significativas ao nível de $\alpha = 0.05$. Além disso, a estatística $F=993.8$, assim rejeitando $H_0$ e pelo menos um dos $\beta_j$ é significativo.
+
+<br><br>
 
 
 (e) Teste as hipóteses $H_0 : \beta_1 = 0$ versus $H_a : \beta_1 \not = 0$;
@@ -444,9 +470,134 @@ Apresente:
 (a) As equações das RLS individuais (*Y versus PO* e *Y versus PC*) e os respectivos gráficos
 ajustados;
 
+```{r}
+
+y  <- c(18.217, 30.099, 36.559, 36.879, 28.757,
+        18.507, 25.535, 23.893, 21.545, 30.319,
+        30.439, 24.489, 22.693, 19.067, 26.283,
+        28.309, 26.013, 21.519, 24.985, 18.959)
+
+po <- c(11.2, 11, 11.9, 11.4, 10.9,
+        9.7, 10.5, 10.8, 8.7, 12.1,
+        11.2, 9.3, 9.9, 10, 10,
+        10.7, 11, 9.1, 10.1, 9.4)
+
+pc <- c(171.3, 170.6, 187.6, 187.1, 166.3,
+        141.3, 163.5, 155.2, 153.5, 176.1,
+        168.1, 159.1, 158.2, 145.3, 166.2,
+        170.1, 160.2, 151.6, 165.0, 146.1)
+
+
+dados <- data.frame(y = y, po = po, pc = pc)
+```
+
+Olhando para o modelo $Y \sim PO$
+
+```{r}
+fit <- lm(y ~ po, data = dados)
+summary(fit)
+
+```
+
+O modelo inicial foi $Y = -16.8290+4.0672\beta_1$, com o PO sendo significativo,  com o $R^2 = 0.4813$ e o ajustado $0.4525$, assim foi um modelo ruim.
+<br>
+
+Vendo o ajuste do modelo,
+
+```{r}
+plot(x = dados$po, y = dados$y,
+     xlab = 'Peso do ovo (PO)',
+     ylab = 'Consumo de alimentos (Y)',
+     main = 'Gráfico de dispersão do consumo pelo PO')
+curve(fit$coefficients[1] + fit$coefficients[2]*x ,  col = 'red', lwd = 2, add=T, lty=2)
+```
+
+O modelo passa no meio da maioria dos pontos, mas há vários longe da reta.
+
+<br><br>
+
+Quando ao  modelo $Y \sim PC$
+
+```{r}
+fit <- lm(y ~ pc, data = dados)
+summary(fit)
+
+```
+
+O modelo inicial foi $Y = -36.0661 + 0.3783\beta_1$, com o intercepto e o PC sendo significativo,  com o $R^2 = 0.7507$ e o ajustado $0.7369$, assim foi um modelo melhor que o do PO. Com a estátistica F sendo significativa.
+Vendo o ajuste do modelo,
+
+```{r}
+plot(x = dados$pc, y = dados$y,
+     xlab = 'Peso corporal (PC)',
+     ylab = 'Consumo de alimentos (Y)',
+     main = 'Gráfico de dispersão do consumo pelo PC')
+curve(fit$coefficients[1] + fit$coefficients[2]*x ,  col = 'red', lwd = 2, add=T, lty=2)
+```
+
+O ajuste ficou bem melhor e mais próximo da maioria dos pontos, tendo apenas um ponto (PC = 171) bem longe da reta.
+
+<br><br>
+
 (b) A equações das regressões quadráticas individuais (*PO versus Y* e *PC versus Y*) e decida pelo melhor ajuste, individualmente;
 
+Olhando para o modelo $Y \sim PO^2$
+
+```{r}
+fit <- lm(y ~ I(po^2), data = dados)
+summary(fit)
+```
+
+O modelo inicial foi $Y = 3.9522+0.1974\beta_1$, com o PO sendo significativo,  com o $R^2 = 0.4921$ e o ajustado $0.4639$, assim foi um modelo ruim. Além disso, a estatística F foi significativa.
+<br>
+
+Vendo o ajuste do modelo,
+
+```{r}
+plot(x = dados$po^2, y = dados$y,
+     xlab = 'Peso do ovo (PO²)',
+     ylab = 'Consumo de alimentos (Y)',
+     main = 'Gráfico de dispersão do consumo pelo PO²')
+curve(fit$coefficients[1] + fit$coefficients[2]*x ,  col = 'red', lwd = 2, add=T, lty=2)
+```
+
+O modelo passa no meio da maioria dos pontos, mas há vários longe da reta.
+
+<br><br>
+
+Quando ao  modelo $Y \sim PC$
+
+```{r}
+fit <- lm(y ~ I(pc^2), data = dados)
+summary(fit)
+
+```
+
+O modelo inicial foi $Y = -5.2406 + 0.0011\beta_1$, com o $PC^2$ sendo significativo,  com o $R^2 = 0.758$ e o ajustado $0.7446$, assim foi um modelo melhor que o do $PO^2$. Com a estátistica F sendo significativa.
+Vendo o ajuste do modelo,
+
+```{r}
+plot(x = dados$pc^2, y = dados$y,
+     xlab = 'Peso corporal (PC)',
+     ylab = 'Consumo de alimentos (Y)',
+     main = 'Gráfico de dispersão do consumo pelo PC')
+curve(fit$coefficients[1] + fit$coefficients[2]*x ,  col = 'red', lwd = 2, add=T, lty=2)
+```
+O modelo os pontos ficam mais próximos, tirando um ponto com PC próximo ao 29.000.
+
+<br><br>
+
+Graficamente os modelos são idênticos aos modelos$^1$, e o PC é um modelo melhor que o PO.
+
+<br><br>
+
 (c) A equação de uma RLM do tipo: $Y = PO + PC$;
+
+```{r}
+fit <- lm(y ~ po + pc, data = dados)
+summary(fit)
+```
+
 
 (d) A equação de uma RLM do tipo: $Y = P  + PO^2 + P C + PC^2 + PO \cdot PC$;
 
