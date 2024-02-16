@@ -131,13 +131,12 @@ $SQReg = SQT - SQE = 449.0167 - 1.4953 =  447.5213$
 O teste possui as seguintes hipóteses,
 
 
-$$
-    \begin{cases}
+
+  \begin{cases}
 H_0: \beta_1 = \beta_2 = ... = \beta_p = 0\\
 H_1: \textrm{nem todos os \beta_j (j = 1,2,...,p) são iguais a zero}
-
     \end{cases}
-$$
+
 
 No qual testamos, se $F_{H_0} >F_{\alpha, p-1, n-p}$
 
@@ -147,13 +146,13 @@ Usando $\alpha = 0.05$, $F_{0.95, 2, 27}$, o $F_{H_0} = 4040$ é maior que o F t
 
 2. Analogamente ao exercício anterior, considere n = 10, p = 3, y'y = 56 e as equações normais:
 
-$$
-    \begin{cases}
+
+  \begin{cases}
 4\beta_1 + 2\beta_2 - 2\beta_3 ={ 4}\\
 2\beta_1 + 2\beta_2 + 1\beta_3 = { 7}\\
 -2\beta_1 + \beta_2 + 6\beta_3 ={ 9}
     \end{cases}
-$$
+
 
 Encontre os estimadores de Mínimos Quadrados (EMQ) para $\beta$ e para $\sigma^2$.
 
@@ -195,14 +194,13 @@ sigma <- (56 - beta %*% xy)/(10-3)
 
 $\hat \beta = (X'X)^{-1}X'Y$
 
-$\hat \beta = $
 
 ```{r}
 dados <- data.frame(y = c(12,13,3,3,11,19,1,14,15,17,2,15),
                     x1= c(31,16,29,19,27,21,24,11,26,18,12,3),
                     x2= c(4,5,3,0,2,6,2,3,6,6,1,5))
 
-dados
+
 
 n <- nrow(dados)
 
@@ -306,7 +304,7 @@ Foi obtido um $R^2$ de 0.7395 e um ajustado de 0.6816, assim, o modelo está com
 Para isso, fazendo o teste de ajustamento global para verificar se os $\beta_j$ são significativos para explicar os dados.
 
 ```{r}
-summary(aov(dados$y ~ dados$x1 + dados$x2))
+anova(lm(dados$y ~ dados$x1 + dados$x2))
 ```
 Temos que $SQReg = 318.7 + 14.7 = 333.4$, $QMReg = \frac{333.4}{1}$, e o $QME = 13.1$, daí $F=\frac{333.4}{13.1}$
 
@@ -352,6 +350,7 @@ summary(fit)
 ```
 Temos que o modelo estimado foi $Y = 0.274 -0.1987X + 0.0642X^2$.
 
+<br><br>
 
 (b) Apresente graficamente o ajuste;
 
@@ -370,6 +369,7 @@ graph = scatterplot3d(dados$x,dados$x2,dados$y,
 graph$plane3d(fit, col="red")
 ```
 
+<br><br>
 
 (c) Realize a ANOVA;
 
@@ -379,6 +379,7 @@ anova(fit)
 
 Tanto $x$ quanto $x^2$ foram significativos, os resíduos tendo baixo QME comparando com o QMReg.
 
+<br><br>
 
 (d) Os dados fornecem evidências suficientes para indicar que o modelo contribui significativamente
 para a predição de Y ?
@@ -395,11 +396,13 @@ summary(fit)
 ```
 $\beta_1$ foi significativo, tento $t_0 = -3.725$ e um $p=0.0074$, assim usando um $\alpha = 0.05$ rejeitamos $H_0$, portanto $\beta_1 \not = 0$
 
+<br><br>
 
 (f) Que porcentagem da variação total é explicada pelo modelo?
 
 Olhando o $R^2$ que é 0.9965 e o ajustado 0.9955, assim temos que o modelo explica 99.55% da variação total.
 
+<br><br>
 
 (g) Apresente uma estimativa pontual e intervalar para $X_0 = 5.5$.
 
@@ -416,7 +419,7 @@ E o seu intervalo de confiança é o seguinte,
 
 ```{r}
 pred.new = predict(fit, data.new, interval='confidence')
-pred.new
+cat('[' ,pred.new[[2]], ',', pred.new[[3]], ']')
 ```
 
 
@@ -442,13 +445,6 @@ Y&PO&PC\\
 23.893&10.8&155.2\\
 21.545&8.7&153.5\\
 30.319&12.1&176.1\\
-\hline
-\end{array}
-
-\begin{array}{ccc}
-\hline
-Y&PO&PC\\
-\hline
 30.439&11.2&168.1\\
 24.489&9.3&159.1\\
 22.693&9.9&158.2\\
@@ -578,11 +574,12 @@ Vendo o ajuste do modelo,
 
 ```{r}
 plot(x = dados$pc^2, y = dados$y,
-     xlab = 'Peso corporal (PC)',
+     xlab = 'Peso corporal (PC²)',
      ylab = 'Consumo de alimentos (Y)',
-     main = 'Gráfico de dispersão do consumo pelo PC')
+     main = 'Gráfico de dispersão do consumo pelo PC²')
 curve(fit$coefficients[1] + fit$coefficients[2]*x ,  col = 'red', lwd = 2, add=T, lty=2)
 ```
+
 O modelo os pontos ficam mais próximos, tirando um ponto com PC próximo ao 29.000.
 
 <br><br>
@@ -598,12 +595,143 @@ fit <- lm(y ~ po + pc, data = dados)
 summary(fit)
 ```
 
+Temos o modelo $Y = -36.3857 + 0.3147\cdot PO + 0.3601 \cdot PC$. Com o PO não sendo significativo, e o intercepto e o PC significativo com $\alpha < 0.001$. Quanto ao $R^2 =0.7519$ e o ajustado é 0.7227, assim o modelo explicando 72% da variação da resposta. Além disso, a estatística F é significativa.
 
-(d) A equação de uma RLM do tipo: $Y = P  + PO^2 + P C + PC^2 + PO \cdot PC$;
+<br><br>
+
+(d) A equação de uma RLM do tipo: $Y = PO  + PO^2 + P C + PC^2 + PO \cdot PC$;
+
+```{r}
+fit <- lm(y ~ po + I(po^2) + pc + I(pc^2) + po*pc, data=dados)
+summary(fit)
+```
+Usando esse modelo específico tivemos, $Y = 1.28 + 12.60PO -0.91PC + 1.51PO^2 + 0.01PC^2 -0.27PO\cdot PC$. No modelo, não tivemos nehnum fator significativo, quanto ao $R^2 = 0.7735$ e o ajustado $0.6926$, assim o modelo explicando, aproximadamente, 70% da variação. Quanto a estatística F foi significativa. No entanto, mesmo o $R^2$ sendo considerável e F sendo significativo, o modelo é muito saturado, explica menos que os com menos variáveis e, possivelmente, por uma variável ser função da outra deve haver multicolinearidade.
+
+<br><br>
 
 (e) Apresente o melhor modelo ajustado final, inclusive seu gráfico e conclua.
 
+Usando o step
+
+```{r}
+library(MASS)
+dados
+fit <- lm(y ~ po + pc + po*pc, data =dados)
+summary(fit)
+fit0 <- stepAIC(fit, direction = 'backward')
+
+summary(fit0)
+```
+
+O melhor modelo inicialmente foi $Y = -36.0661 + 0.3783\cdot PC$ tendo tanto o intercepto quanto ao PC foram significativos a um nível $\alpha < 0.001$. O AIC foi de 43.17, já o $R^2=0.7507$ quanto ao ajustado $0.7369$, sendo um $R^2$ maior que o dos modelos anteriores.
+
 <br><br>
+
+
+```{r}
+plot(x = dados$pc, y = dados$y,
+     xlab = 'Peso corporal (PC)',
+     ylab = 'Consumo de alimentos (Y)',
+     main = 'Gráfico de dispersão do consumo pelo PC')
+curve(fit0$coefficients[1] + fit0$coefficients[2]*x ,  col = 'red', lwd = 2, add=T, lty=2)
+```
+
+O ajuste ficou próximo da maioria dos pontos, tendo apenas um ponto (PC = 171) bem longe da reta.
+
+<br><br>
+
+Agora analisando os pressupostos,
+
+<br>
+
+**Normalidade dos resíduos** <br>
+
+Para isso, será usado o teste de Shapiro-Wilk, que possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \textrm{Os dados seguem uma distribuição normal.}\\
+H_{1}: \textrm{Os dados não se distribuem como uma normal.}
+    \end{cases}
+$$
+<br>
+```{r}
+shapiro.test(fit0$residuals)
+```
+Assim, utilizando 95% de confiança, rejeitamos $H_0$, temos que os resíduos não seguem uma distribuição normal.
+<br>
+
+Assim, os pressupostos do modelo não foram atendidos.
+
+<br>
+
+Olhando para os pontos buscando influentes,
+
+```{r}
+res = residuals(fit0) # residuos usuais
+R   = rstandard(fit0) # residuos estandardizados
+Ti   = rstudent(fit0)  # residuos rstudent
+D   = cooks.distance(fit0)
+h   = hatvalues(fit0) # leverage
+
+hl  = influence(fit0) # Mostra varias medidas
+HL  = influence.measures(fit0)
+
+# Valores atipicos   se: |R,T|>3
+# Valores influentes se: |D|>0.5
+# Valores alavanca   se: |h|>0.5
+influence.measures(fit0)
+Residuos = round(cbind(Ti, R, D, h), 3)
+Residuos              # i=1 -> atipico
+
+
+```
+
+Retirando o primeiro valor do banco e reajustando o modelo,
+
+```{r}
+fit1 <- lm(y ~ pc, data =dados[-1])
+summary(fit1)
+
+shapiro.test(fit1$residuals)
+```
+Esse continua sem normalidade dos resíduos.
+
+<br><br>
+
+O único modelo que atendeu aos pressupostos foi o $Y \sim PO$, mas esse teve um $R^2$ muito baixo, por isso será tentado tirar um valor influente.
+```{r}
+library(car)
+library(lmtest)
+fit3 <- lm(I(y) ~ po , data = dados)
+#summary(fit3)
+
+shapiro.test(fit3$residuals)
+gqtest(fit3)
+durbinWatsonTest(fit3)
+```
+
+```{r}
+res = residuals(fit3) # residuos usuais
+R   = rstandard(fit3) # residuos estandardizados
+Ti   = rstudent(fit3)  # residuos rstudent
+D   = cooks.distance(fit3)
+h   = hatvalues(fit3) # leverage
+
+hl  = influence(fit3) # Mostra varias medidas
+HL  = influence.measures(fit3)
+
+# Valores atipicos   se: |R,T|>3
+# Valores influentes se: |D|>0.5
+# Valores alavanca   se: |h|>0.5
+
+Residuos = round(cbind(Ti, R, D, h), 3)
+Residuos              # i=1 -> atipico
+```
+
+
+
+
 
 6. Um experimento foi realizado para se verificar o efeito da temperatura (X1) e da concentração (X2) na produção (Y) de um certo processo químico. Os dados obtidos são apresentados nas tabelas.
 
@@ -763,11 +891,6 @@ head(dados)
 ```
 
 
-```{r}
-
-```
-
-
 <br><br>
 
 10. Utilize o banco de dados bailarinas disponível na pasta Banco de Dados da disciplina e ajuste um MRLM (análise completa) considerando como resposta a variável ped.
@@ -776,4 +899,3 @@ head(dados)
 dados <- read.table('dados\\Bailarinas.txt', header = T)
 dados
 ```
-
