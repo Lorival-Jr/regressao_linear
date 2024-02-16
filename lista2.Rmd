@@ -504,10 +504,17 @@ x2<- c(sort(rep(seq(10,25,5),5)))
 
 dados <- data.frame(y = y, x1 = x1, x2 = x2)
 
+fit <- lm(y ~ x1 + x2, data = dados)
+summary(fit)
 ```
 
+Assim o modelo ajustado foi $Y = 93.18 + 0.87x_1 + 2.424x_2$, tendo o intercepto, $x_1$ e $x_2$ sendo significativo a um nível $\alpha < 0.001$. Além disso, a estatística F foi significativo.
+
+<br><br>
 
 (b) Encontre um IC para o coeficiente da variável concentração no modelo ajustado;
+
+
 
 (c) Calcule e interprete o valor do coeficiente de determinação para esse modelo;
 
@@ -584,6 +591,12 @@ Prod&Prec&Var&Fert\\
 
 (a) Ajuste um modelo aos dados, considerando todas regressões possíveis (ver Exemplo disponível na página 33 no Material Didático de Giolo (Apostila-2007) - Análise de Regressão Linear Múltipla. Utilize todos os critérios para a comparação dos modelos;
 
+```{r}
+prod <- c(15.6,16.2,17.1,16.7,15.1,17.1,18.3,17.2,17.4,18.4,19.7,17.6,14.8,13.8,14.5,14.4,15.2,14.8,15.1,16,16.2,16.8,17.6,18.6)
+
+```
+
+
 (b) Ajuste um modelo, selecionando as variáveis significantes, que explique a produção de trigo, utilizando cada um dos métodos vistos (backward, forward e stepwise);
 
 (c) Qual ajuste é melhor? Por que?
@@ -592,7 +605,24 @@ Prod&Prec&Var&Fert\\
 
 9. Utilize o banco de dados mtcars do R e faça uma análise em um MRLM completa considerando como resposta a variável mpg e todas as demais como regressoras sem considerar interações.
 
+Os primeiros dados do banco são os seguintes,
+```{r}
+dados <- mtcars
+head(dados)
+```
+
+
+```{r}
+
+```
+
+
 <br><br>
 
 10. Utilize o banco de dados bailarinas disponível na pasta Banco de Dados da disciplina e ajuste um MRLM (análise completa) considerando como resposta a variável ped.
+
+```{r}
+dados <- read.table('dados\\Bailarinas.txt', header = T)
+dados
+```
 
