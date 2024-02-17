@@ -733,77 +733,77 @@ Residuos              # i=1 -> atipico
 
 
 
-6. Um experimento foi realizado para se verificar o efeito da temperatura (X1) e da concentração (X2) na produção (Y) de um certo processo químico. Os dados obtidos são apresentados nas tabelas.
+<!-- 6. Um experimento foi realizado para se verificar o efeito da temperatura (X1) e da concentração (X2) na produção (Y) de um certo processo químico. Os dados obtidos são apresentados nas tabelas. -->
 
 
-\begin{array}{ccc}
-\hline
-Y&X1&X2\\
-\hline
-189&80&10\\
-203&100&10\\
-222&120&10\\
-234&140&10\\
-261&160&10\\
-204&80&15\\
-212&100&15\\
-223&120&15\\
-246&140&15\\
-273&160&15\\
-\hline
-\end{array}
+<!-- \begin{array}{ccc} -->
+<!-- \hline -->
+<!-- Y&X1&X2\\ -->
+<!-- \hline -->
+<!-- 189&80&10\\ -->
+<!-- 203&100&10\\ -->
+<!-- 222&120&10\\ -->
+<!-- 234&140&10\\ -->
+<!-- 261&160&10\\ -->
+<!-- 204&80&15\\ -->
+<!-- 212&100&15\\ -->
+<!-- 223&120&15\\ -->
+<!-- 246&140&15\\ -->
+<!-- 273&160&15\\ -->
+<!-- \hline -->
+<!-- \end{array} -->
 
-\begin{array}{ccc}
-\hline
-Y&X1&X2\\
-\hline
-220&80&20\\
-228&100&20\\
-252&120&20\\
-263&140&20\\
-291&160&20\\
-226&80&25\\
-232&100&25\\
-259&120&25\\
-268&140&25\\
-294&160&25\\
-\hline
-\end{array}
+<!-- \begin{array}{ccc} -->
+<!-- \hline -->
+<!-- Y&X1&X2\\ -->
+<!-- \hline -->
+<!-- 220&80&20\\ -->
+<!-- 228&100&20\\ -->
+<!-- 252&120&20\\ -->
+<!-- 263&140&20\\ -->
+<!-- 291&160&20\\ -->
+<!-- 226&80&25\\ -->
+<!-- 232&100&25\\ -->
+<!-- 259&120&25\\ -->
+<!-- 268&140&25\\ -->
+<!-- 294&160&25\\ -->
+<!-- \hline -->
+<!-- \end{array} -->
 
 
-(a) Ajuste um MRLM que explique Y e função das variáveis explicativas;
+<!-- (a) Ajuste um MRLM que explique Y e função das variáveis explicativas; -->
 
-```{r}
-y <- c(189,203,222,234,261,204,212,223,246,273,
-       220,228,252,263,291,226,232,259,268,294)
+<!-- ```{r} -->
+<!-- y <- c(189,203,222,234,261,204,212,223,246,273, -->
+<!--        220,228,252,263,291,226,232,259,268,294) -->
 
-x1<- c(rep(seq(80, 160, 20),4))
+<!-- x1<- c(rep(seq(80, 160, 20),4)) -->
 
-x2<- c(sort(rep(seq(10,25,5),5)))
+<!-- x2<- c(sort(rep(seq(10,25,5),5))) -->
 
-dados <- data.frame(y = y, x1 = x1, x2 = x2)
+<!-- dados <- data.frame(y = y, x1 = x1, x2 = x2) -->
 
-fit <- lm(y ~ x1 + x2, data = dados)
-summary(fit)
-```
+<!-- fit <- lm(y ~ x1 + x2, data = dados) -->
+<!-- summary(fit) -->
+<!-- ``` -->
 
-Assim o modelo ajustado foi $Y = 93.18 + 0.87x_1 + 2.424x_2$, tendo o intercepto, $x_1$ e $x_2$ sendo significativo a um nível $\alpha < 0.001$. Além disso, a estatística F foi significativo.
+<!-- Assim o modelo ajustado foi $Y = 93.18 + 0.87x_1 + 2.424x_2$, tendo o intercepto, $x_1$ e $x_2$ sendo significativo a um nível $\alpha < 0.001$. Além disso, a estatística F foi significativo. -->
+
+<!-- <br><br> -->
+
+<!-- (b) Encontre um IC para o coeficiente da variável concentração no modelo ajustado; -->
+
+
+
+<!-- (c) Calcule e interprete o valor do coeficiente de determinação para esse modelo; -->
+
+<!-- (d) Estime a variância residual do modelo ajustado. -->
+
 
 <br><br>
 
-(b) Encontre um IC para o coeficiente da variável concentração no modelo ajustado;
 
-
-
-(c) Calcule e interprete o valor do coeficiente de determinação para esse modelo;
-
-(d) Estime a variância residual do modelo ajustado.
-
-
-<br><br>
-
-
-7. Um CEO de um grande banco deseja estudar a relação entre os salários mensais (Y : salários mínimos) e o tempo de experiência (E: anos) no cargo de gerente das agências. Outro interesse é
+6. Um CEO de um grande banco deseja estudar a relação entre os salários mensais (Y : salários mínimos) e o tempo de experiência (E: anos) no cargo de gerente das agências. Outro interesse é
 saber se existem diferenças quando são levados em conta os salários de homens e de mulheres. Para tal, sugere-se um MRLM do tipo: $Y = \beta_0 + \beta_1E + \beta_2S + \beta_3ES + \epsilon$, sendo S: sexo (0 se mulher e 1 se homem).
 Considerando os dados coletados a seguir, apresente um relatório de análise estatística a este CEO:
 
@@ -817,6 +817,98 @@ Homem:&Y&2,54&2,57&4,22&4,09&3,61&4,71&3,15&2,99&4,75&4,12&2,36&4,09&4,51\\
 &E&6&7&23&20&18&27&11&10&29&23&4&22&25\\
 \hline
 \end{array}
+
+<br>
+
+```{r}
+dados <- data.frame(
+  y = c(1.93,3.18,2.28,3.13,2.78,3.09,2.65,2.22,2.85,3.23,2.82,1.91,2.54,2.57,4.22,4.09,3.61,4.71,3.15,2.99,4.75,4.12,2.36,4.09,4.51),
+  e = c(0,17,5,15,9,15,8,5,13,20,11,1,6,7,23,20,18,27,11,10,29,23,4,22,25),
+  s = as.factor(c(rep(0, 12), rep(1, 13)))
+)
+
+fit <- lm(y ~ e + s+ e*s, data = dados)
+
+summary(fit)
+```
+Usando o modelo sugerido tivemos $1.9451 + 0.0733E + 0.0166S_1 + 0.0002\cdot S_1 \cdot E$. Usando como base o Sexo = 0 (Feminino), o $R^2=0.9881$ e ajustado $0.9864$, ou seja, o modelo explicou quase toda variação. O intercepto, os anos de experiência (E) e a iteração experiência e sexo, o sexo sozinho não foi significativo. Além disso a estatística F foi significativa.
+
+<br><br>
+
+#### **Testando os pressupostos**
+
+<br><br>
+**Não multicolinearidade**
+
+Para isso, será usado Fator de Influência  de Variância (VIF), que é calculado por
+
+$$VIF_j = \frac{1}{1-R^2_j}$$
+E é usado como valor crítico o 10, caso o VIF seja maior ou igual há multicolinearidade.
+
+```{r, echo=T}
+vif(fit)
+```
+Assim o vif das variáveis foi menor que 10, no entanto, o da iteração e:s foi bem alto quase chegando ao valor crítico, a iteração será mantida devido esse ser o modelo sugerido.
+<br><br>
+
+**Normalidade dos resíduos** <br>
+
+Para isso, será usado o teste de Shapiro-Wilk, que possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \textrm{Os dados seguem uma distribuição normal.}\\
+H_{1}: \textrm{Os dados não se distribuem como uma normal.}
+    \end{cases}
+$$
+<br>
+```{r}
+shapiro.test(fit$residuals)
+```
+Assim, utilizando 95% de confiança, não rejeitamos $H_0$, temos que os resíduos seguem uma distribuição normal.
+<br><br>
+
+**Homocedastidade**
+
+Para isso, o teste de Goldfeld-Quandt será usado, o qual possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \textrm{A homocedasticidade está presente.}\\
+H_{1}: \textrm{A homocedasticidade não está presente.}
+    \end{cases}
+$$
+
+```{r}
+library(lmtest)
+
+gqtest(fit2)
+```
+Usando 95% de confiança não rejeitamos $H_0$, ou seja, a homocedasticidade está presente nas variáveis independentes.
+<br><br>
+
+**Resíduos independentes e não correlacionados**<br>
+<br>
+
+
+Para testar se existe de fato não correlação será usado o teste de Durbin-Watson, que possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \rho = 0,    &&\textrm{Existe independência}\\
+H_{1}: \rho \not= 0,&&\textrm{Não existe independência}
+    \end{cases}
+$$
+
+```{r}
+library(car)
+durbinWatsonTest(fit)
+```
+<br>
+Assim, usando 95% de confiança, não rejeitamos $H_0$, ou seja, existe independência nos resíduos.
+<br><br>
+
+Assim, todos pressupostos foram aceitos o modelo sendo válido. Enfim, temos o modelo $Y = 1.9451 + 0.0733E + 0.0166S_1 + 0.0002\cdot S_1 \cdot E$, no qual o sexo não foi significativo, mas seu efeito foi de +0.01666 pra homens, enquanto a interação de ser homem e ano foi de +0.0002. Assim pelo modelo, homens ganham 0.02 salários mínimos a mais e também 0.0002 a mais a cada ano de experiência.
 
 <br><br>
 
@@ -895,7 +987,201 @@ head(dados)
 
 10. Utilize o banco de dados bailarinas disponível na pasta Banco de Dados da disciplina e ajuste um MRLM (análise completa) considerando como resposta a variável ped.
 
+Os primeiros dados do banco são,
 ```{r}
 dados <- read.table('dados\\Bailarinas.txt', header = T)
-dados
+head(dados)
 ```
+<br>
+Vizualizando a matriz de correlação,
+
+```{r}
+library(corrplot)
+
+corrplot(cor(dados), method = 'color',
+         type = 'lower'  ,
+         addCoef.col ='black',tl.col="black",
+         number.cex = 0.8, diag=F)
+```
+Inicialmente vemos correlação entre todas variáveis, sendo um péssimo indício. A variável resposta *ped* tem correlação moderada com peso, forte com idade, altura e pee, e quase perfeita com pem. Para as variáveis explicativas há correlção forte ou moderada entre todas.
+
+<br><br>
+
+Fazendo o modelo completo,
+
+```{r}
+fit0 <- lm(ped ~ ., data = dados)
+summary(fit0)
+```
+Explicamos perfeitamente ped, com $R^2=1$ e o ajustado também igual a 1, sendo pee e pem significativos.
+
+```{r}
+
+plot(x = dados$ped, y = fit0$fitted.values,
+     xlab = 'Ped do banco orignial',
+     ylab = 'Ped estimado pelo modelo',
+     main = 'Previsto X Real')
+curve(x*1,  col = 'red', lwd = 1, add=T, lty=2)
+```
+O modelo é perfeito devido *PED* ser um função de *PEM* e *PEE*, sendo $PED = 2\cdot PEM - PEE$. Assim não faz sentido fazer uma regressão caso tenhamos essas duas variáveis, pois podemos calcular diretamente e sem erro a variável resposta, por isso, será retirada uma delas do banco original, a variável *PEM*.
+
+
+<br><br>
+
+```{r}
+dados <- dados[, -6]
+```
+
+Realizando o novo modelo completo $PED \sim \textrm{PEE} + \textrm{peso} + \textrm{altura} + \textrm{idade}$.
+
+```{r}
+fit1 <- lm(ped ~ ., data = dados)
+summary(fit1)
+```
+<br>
+Usando o *stepAIC* para encontrar um modelo melhor,
+
+```{r}
+library(MASS)
+fit <- stepAIC(fit1, direction = 'backward')
+```
+
+Assim, o melhor modelo baseado no novo banco e no AIC foi $PED \sim \text{idade} + \text{pee}$, com $AIC=624.13$.
+
+```{r}
+summary(fit)
+```
+Todas as variáveis foram significativas usando $\alpha = 0.05$, o $R^2=0.7125$ e o ajustado 0.7089, tendo um ajuste aceitável, a estatística F também foi significativa.
+
+<br><br>
+
+Verificando os pressupostos,
+
+**Normalidade dos resíduos** <br>
+
+Para isso, será usado o teste de Shapiro-Wilk, que possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \textrm{Os dados seguem uma distribuição normal.}\\
+H_{1}: \textrm{Os dados não se distribuem como uma normal.}
+    \end{cases}
+$$
+<br>
+```{r}
+shapiro.test(fit$residuals)
+```
+Assim, utilizando 95% de confiança, não rejeitamos $H_0$, temos que os resíduos não seguem uma distribuição normal.
+<br><br>
+ 
+E portanto, o modelo não seguirá os pressupostos.
+
+<br><br>
+
+Realizando a transformação Box-Cox buscando atender os pressupostos, a transformação sendo,
+$$
+    \begin{cases}
+Y \rightarrow \frac{Y^\lambda - 1}{\lambda}&,    & \lambda \not = 0;\\
+\\
+Y \rightarrow \ln(Y)&,& \lambda = 0.
+    \end{cases}
+$$
+
+<br><br>
+O $\lambda$ que foi calculado pelo método e seu intervalo para nossos dados foi 1.7575 e com intervalo,
+```{r}
+library(MASS)
+
+w = boxcox(ped ~ idade + pee, data = dados, plotit=T)
+
+posicao = which.max(w$y)
+
+lambda = w$x[posicao]
+dados$y2 = (dados$ped^(lambda)-1)/lambda
+```
+
+Ajustando o modelo com a variável transformada,
+
+```{r}
+fit2 <- lm(y2 ~ idade + pee, data = dados)
+summary(fit2)
+```
+Todas as variáveis foram significativas usando $\alpha = 0.01$, o $R^2=0.7264$ e o ajustado 0.723 aumentaram em 0.02, ou seja, praticamente não mudaram, tendo um ajuste aceitável, a estatística F também foi significativa.
+
+
+<br><br>
+
+#### **Testando os pressupostos**
+
+<br><br>
+**Não multicolinearidade**
+
+Para isso, será usado Fator de Influência  de Variância (VIF), que é calculado por
+
+$$VIF_j = \frac{1}{1-R^2_j}$$
+E é usado como valor crítico o 10, caso o VIF seja maior ou igual há multicolinearidade.
+
+```{r, echo=T}
+vif(fit2)
+```
+Assim o vif das variáveis foi menor que 10, não havendo multicolinearidade. <br><br>
+
+
+**Normalidade dos resíduos** <br>
+
+Para isso, será usado o teste de Shapiro-Wilk, que possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \textrm{Os dados seguem uma distribuição normal.}\\
+H_{1}: \textrm{Os dados não se distribuem como uma normal.}
+    \end{cases}
+$$
+<br>
+```{r}
+shapiro.test(fit2$residuals)
+```
+Assim, utilizando 95% de confiança, não rejeitamos $H_0$, temos que os resíduos seguem uma distribuição normal.
+<br><br>
+
+**Homocedastidade**
+
+Para isso, o teste de Goldfeld-Quandt será usado, o qual possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \textrm{A homocedasticidade está presente.}\\
+H_{1}: \textrm{A homocedasticidade não está presente.}
+    \end{cases}
+$$
+
+```{r}
+library(lmtest)
+
+gqtest(fit2)
+```
+Usando 95% de confiança não rejeitamos $H_0$, ou seja, a homocedasticidade está presente nas variáveis independentes.
+<br><br>
+
+**Resíduos independentes e não correlacionados**<br>
+<br>
+
+
+Para testar se existe de fato não correlação será usado o teste de Durbin-Watson, que possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \rho = 0,    &&\textrm{Existe independência}\\
+H_{1}: \rho \not= 0,&&\textrm{Não existe independência}
+    \end{cases}
+$$
+
+```{r}
+library(car)
+durbinWatsonTest(fit2)
+```
+<br>
+Assim, usando 95% de confiança, não rejeitamos $H_0$, ou seja, existe independência nos resíduos.
+<br><br>
+
+Assim, todos pressupostos foram aceitos o modelo sendo válido. Enfim, temos o modelo $\text{ped} \sim \text{idade} + \text{pee}$ com ped transformado.
