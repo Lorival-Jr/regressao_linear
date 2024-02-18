@@ -729,79 +729,7 @@ Residuos = round(cbind(Ti, R, D, h), 3)
 Residuos              # i=1 -> atipico
 ```
 
-
-
-
-
-<!-- 6. Um experimento foi realizado para se verificar o efeito da temperatura (X1) e da concentração (X2) na produção (Y) de um certo processo químico. Os dados obtidos são apresentados nas tabelas. -->
-
-
-<!-- \begin{array}{ccc} -->
-<!-- \hline -->
-<!-- Y&X1&X2\\ -->
-<!-- \hline -->
-<!-- 189&80&10\\ -->
-<!-- 203&100&10\\ -->
-<!-- 222&120&10\\ -->
-<!-- 234&140&10\\ -->
-<!-- 261&160&10\\ -->
-<!-- 204&80&15\\ -->
-<!-- 212&100&15\\ -->
-<!-- 223&120&15\\ -->
-<!-- 246&140&15\\ -->
-<!-- 273&160&15\\ -->
-<!-- \hline -->
-<!-- \end{array} -->
-
-<!-- \begin{array}{ccc} -->
-<!-- \hline -->
-<!-- Y&X1&X2\\ -->
-<!-- \hline -->
-<!-- 220&80&20\\ -->
-<!-- 228&100&20\\ -->
-<!-- 252&120&20\\ -->
-<!-- 263&140&20\\ -->
-<!-- 291&160&20\\ -->
-<!-- 226&80&25\\ -->
-<!-- 232&100&25\\ -->
-<!-- 259&120&25\\ -->
-<!-- 268&140&25\\ -->
-<!-- 294&160&25\\ -->
-<!-- \hline -->
-<!-- \end{array} -->
-
-
-<!-- (a) Ajuste um MRLM que explique Y e função das variáveis explicativas; -->
-
-<!-- ```{r} -->
-<!-- y <- c(189,203,222,234,261,204,212,223,246,273, -->
-<!--        220,228,252,263,291,226,232,259,268,294) -->
-
-<!-- x1<- c(rep(seq(80, 160, 20),4)) -->
-
-<!-- x2<- c(sort(rep(seq(10,25,5),5))) -->
-
-<!-- dados <- data.frame(y = y, x1 = x1, x2 = x2) -->
-
-<!-- fit <- lm(y ~ x1 + x2, data = dados) -->
-<!-- summary(fit) -->
-<!-- ``` -->
-
-<!-- Assim o modelo ajustado foi $Y = 93.18 + 0.87x_1 + 2.424x_2$, tendo o intercepto, $x_1$ e $x_2$ sendo significativo a um nível $\alpha < 0.001$. Além disso, a estatística F foi significativo. -->
-
-<!-- <br><br> -->
-
-<!-- (b) Encontre um IC para o coeficiente da variável concentração no modelo ajustado; -->
-
-
-
-<!-- (c) Calcule e interprete o valor do coeficiente de determinação para esse modelo; -->
-
-<!-- (d) Estime a variância residual do modelo ajustado. -->
-
-
 <br><br>
-
 
 6. Um CEO de um grande banco deseja estudar a relação entre os salários mensais (Y : salários mínimos) e o tempo de experiência (E: anos) no cargo de gerente das agências. Outro interesse é
 saber se existem diferenças quando são levados em conta os salários de homens e de mulheres. Para tal, sugere-se um MRLM do tipo: $Y = \beta_0 + \beta_1E + \beta_2S + \beta_3ES + \epsilon$, sendo S: sexo (0 se mulher e 1 se homem).
@@ -882,7 +810,7 @@ $$
 ```{r}
 library(lmtest)
 
-gqtest(fit2)
+gqtest(fit)
 ```
 Usando 95% de confiança não rejeitamos $H_0$, ou seja, a homocedasticidade está presente nas variáveis independentes.
 <br><br>
@@ -912,7 +840,7 @@ Assim, todos pressupostos foram aceitos o modelo sendo válido. Enfim, temos o m
 
 <br><br>
 
-8. Foi realizado um experimento envolvendo 4 variedades de trigo plantadas em canteiros de mesmo tamanho, tendo sido observadas as seguintes variáveis:
+7. Foi realizado um experimento envolvendo 4 variedades de trigo plantadas em canteiros de mesmo tamanho, tendo sido observadas as seguintes variáveis:
 
 Prod: produção de trigo (kg);
 
@@ -963,7 +891,18 @@ Prod&Prec&Var&Fert\\
 (a) Ajuste um modelo aos dados, considerando todas regressões possíveis (ver Exemplo disponível na página 33 no Material Didático de Giolo (Apostila-2007) - Análise de Regressão Linear Múltipla. Utilize todos os critérios para a comparação dos modelos;
 
 ```{r}
-prod <- c(15.6,16.2,17.1,16.7,15.1,17.1,18.3,17.2,17.4,18.4,19.7,17.6,14.8,13.8,14.5,14.4,15.2,14.8,15.1,16,16.2,16.8,17.6,18.6)
+prod  <- c(15.6,16.2,17.1,16.7,15.1,17.1,18.3,17.2,17.4,18.4,19.7,17.6,14.8,13.8,14.5,14.4,15.2,14.8,15.1,16,16.2,16.8,17.6,18.6)
+
+prec  <- c(rep(c(14.4,13.2,14.8,13.6,14,12.8), 4))
+
+VAR   <- sort(rep(1:4, 6))
+
+fert  <- rep(c(1,1,2,2,3,3), 4)
+
+dados <- data.frame(prod = prod,
+           prec = prec,
+           var  = VAR,
+           fert = fert)
 
 ```
 
@@ -974,18 +913,201 @@ prod <- c(15.6,16.2,17.1,16.7,15.1,17.1,18.3,17.2,17.4,18.4,19.7,17.6,14.8,13.8,
 
 <br><br>
 
-9. Utilize o banco de dados mtcars do R e faça uma análise em um MRLM completa considerando como resposta a variável mpg e todas as demais como regressoras sem considerar interações.
+8. Utilize o banco de dados mtcars do R e faça uma análise em um MRLM completa considerando como resposta a variável mpg e todas as demais como regressoras sem considerar interações.
 
 Os primeiros dados do banco são os seguintes,
 ```{r}
 dados <- mtcars
 head(dados)
+
+dados$vs <- as.factor(dados$vs)
+dados$am <- as.factor(dados$am)
 ```
 
+<br>
+Verificando a matriz de correlação,
+
+```{r}
+library(corrplot)
+
+corrplot(cor(dados[,1:7]), method = 'color',
+         type = 'lower'  ,
+         addCoef.col ='black',tl.col="black",
+         number.cex = 0.8, diag=F)
+```
+Olhando a variável resposta, temos correlação negativa forte com *cyl*, *disp*, *hp* e *wt*, também tem correlação forte com *drat*, e moderada com *qseq*. Além disso, há correlação entre muitas as variáveis explicativas, destacando as fortes, tanto negativas quanto positivas, há de *cyl* com *disp*, *hp*, *drat* e *wt*, *disp* com *hp*, *drat*, *wt*, de *hp* com *wt* e *qsec* e de *drat* com *wt*. Ou seja, é bem possível que haja multicolinearidade no modelo completo.
+<br><br>
+
+
+Ajustando um modelo completo,
+
+```{r}
+fit <- lm(mpg ~ ., data =dados)
+summary(fit)
+```
+Usando todas as demais como regressão, nenhuma variável foi significativa a um $\alpha=0.05$, se considerar a confiança como 10%, *wt* seria. Quanto ao $R^2$ foi $0.869$ e o ajustado $0.8066$ sendo até alto, a estatística F foi significativa. Assim, possivelmente, há um modelo menos saturado que seja igual ou melhor.
 
 <br><br>
 
-10. Utilize o banco de dados bailarinas disponível na pasta Banco de Dados da disciplina e ajuste um MRLM (análise completa) considerando como resposta a variável ped.
+Inicialmente testando a multicolinearidade para verificar o que foi visto na matriz de correlação.
+Para isso, será usado Fator de Influência  de Variância (VIF), que é calculado por
+
+$$VIF_j = \frac{1}{1-R^2_j}$$
+E é usado como valor crítico o 10, caso o VIF seja maior ou igual há multicolinearidade.
+
+```{r, echo=T}
+vif(fit)
+```
+Assim o vif das variáveis *cyl*, *disp* e *wt* foram maiores que 10, furando o pressuposto. <br><br>
+
+Será tentatdo usar o StepAIC para encontrar um modelo melhor.
+
+```{r}
+fit1 <- stepAIC(fit, direction = 'backward')
+```
+
+O modelo escolhido foi $\text{mpg} \sim \text{wt + qseq + am}$, com $AIC=61.31$.
+
+<br><br>
+
+```{r}
+summary(fit1)
+fit2 <- lm(mpg ~ wt + qsec + am, data = dados)
+
+```
+
+O modelo escolhido teve as variáveis *wt*, *qsec*, *am = 1*, foram significativos com $\alpha = 0.05$, o intercepto não. Quanto ao $R^2$ foi de 0.8497 e o ajustado 0.8336,  o ajuste explicando mais de 80% da variação. Além disso, a estatística F foi significativa.
+
+<br><br>
+
+```{r}
+library(MASS)
+
+w = boxcox(mpg ~ disp + hp + wt + qsec + am, data = dados, plotit=F)
+
+posicao = which.max(w$y)
+
+lambda = w$x[posicao]
+dados$y2 = log(dados$mpg)
+fit2 <- lm(y2 ~ disp + hp + wt + qsec + am, data = dados)
+
+```
+
+
+
+#### Testando os Pressupostos
+**Homocedastidade**
+
+Para isso, o teste de Goldfeld-Quandt será usado, o qual possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \textrm{A homocedasticidade está presente.}\\
+H_{1}: \textrm{A homocedasticidade não está presente.}
+    \end{cases}
+$$
+
+```{r}
+library(lmtest)
+
+gqtest(fit1)
+```
+Usando $\alpha = 0.05$, rejeitamos $H_0$, ou seja, a homocedasticidade não está presente. Assim, o modelo não segue os pressupostos.
+
+<br><br>
+
+Testando múltiplos modelos, usando a variável resposta trasformada e sem trasformar via Box-Cox. O modelo que seguiu os pressupostos foi $\text{mpg} \sim \text{disp + hp + wt + qsec + am}$ usando o a variável transformada via $Y \leftarrow \log(Y)$.
+
+<br><br>
+
+Vendo e testando os pressupostos para tal modelo,
+
+```{r}
+summary(fit2)
+```
+Apenas o intercepto o *wt* foram sugnificativos a um nível de $\alpha = 0.05$, o $R^2$ foi de 0.8842 e o ajustado de 0.8619, a estatísitca F foi significativa.
+
+<br><br>
+
+#### **Testando os pressupostos**
+
+<br><br>
+**Não multicolinearidade**
+
+Para isso, será usado Fator de Influência  de Variância (VIF), que é calculado por
+
+$$VIF_j = \frac{1}{1-R^2_j}$$
+E é usado como valor crítico o 10, caso o VIF seja maior ou igual há multicolinearidade.
+
+```{r, echo=T}
+vif(fit2)
+```
+Assim o vif das variáveis foi menor que 10, não havendo multicolinearidade, o do disp foi bem alto quase chegando a 10, sendo interessante analisar a variável, como a variável ajuda a cumprir os outros pressupostos será mantida. <br><br>
+
+
+**Normalidade dos resíduos** <br>
+
+Para isso, será usado o teste de Shapiro-Wilk, que possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \textrm{Os dados seguem uma distribuição normal.}\\
+H_{1}: \textrm{Os dados não se distribuem como uma normal.}
+    \end{cases}
+$$
+<br>
+```{r}
+shapiro.test(fit2$residuals)
+```
+Assim, utilizando 95% de confiança, não rejeitamos $H_0$, temos que os resíduos seguem uma distribuição normal.
+<br><br>
+
+**Homocedastidade**
+
+Para isso, o teste de Goldfeld-Quandt será usado, o qual possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \textrm{A homocedasticidade está presente.}\\
+H_{1}: \textrm{A homocedasticidade não está presente.}
+    \end{cases}
+$$
+
+```{r}
+library(lmtest)
+
+gqtest(fit2)
+```
+Usando 95% de confiança não rejeitamos $H_0$, ou seja, a homocedasticidade está presente nas variáveis independentes.
+<br><br>
+
+**Resíduos independentes e não correlacionados**<br>
+<br>
+
+
+Para testar se existe de fato não correlação será usado o teste de Durbin-Watson, que possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \rho = 0,    &&\textrm{Existe independência}\\
+H_{1}: \rho \not= 0,&&\textrm{Não existe independência}
+    \end{cases}
+$$
+
+```{r}
+library(car)
+durbinWatsonTest(fit2)
+```
+<br>
+Assim, usando 95% de confiança, não rejeitamos $H_0$, ou seja, existe independência nos resíduos.
+<br><br>
+
+Assim, todos pressupostos foram aceitos o modelo sendo válido. Enfim, temos o modelo $\text{log(mpg)} \sim \text{disp + hp + wt + qsec + am}$.
+
+<br><br>
+
+
+9. Utilize o banco de dados bailarinas disponível na pasta Banco de Dados da disciplina e ajuste um MRLM (análise completa) considerando como resposta a variável ped.
 
 Os primeiros dados do banco são,
 ```{r}
