@@ -301,28 +301,30 @@ Foi obtido um $R^2$ de 0.7395 e um ajustado de 0.6816, assim, o modelo está com
 (d) Os dados fornecem evidências suficientes para indicar que o modelo contribui significativamente para a predição de Y para valores médios das variávies explicativas? Em caso afirmativo, apresente-o juntamente com seu IC;
 <br>
 
-Para isso, fazendo o teste de ajustamento global para verificar se os $\beta_j$ são significativos para explicar os dados.
+Para isso, fazendo o teste de ajustamento global para verificar se os $\beta_j$ são significativos para explicar os dados, 
 
 ```{r}
-anova(lm(dados$y ~ dados$x1 + dados$x2))
+anova(reg)
 ```
-Temos que $SQReg = 318.7 + 14.7 = 333.4$, $QMReg = \frac{333.4}{1}$, e o $QME = 13.1$, daí $F=\frac{333.4}{13.1}$
+
+
+Temos que $SQReg = 318.7 + 14.7 = 333.4$, $QMReg = \frac{333.4}{1 + 1}=166.705$, e o $QME = 13.1$, daí $F=\frac{166.705}{13.1}= 12.77433$, enquanto o F tabelado, $F_{p-1,n-p} = 4.2564$, e olhando no `summary(reg)` temos que o $p =0.0023$, assim usando $\alpha =0.05$, temos que a regressão é significativa. Além disso, olhando pros quadrados dos resíduos temos que, principalmente, $x2$ explica bastante da variação.
+
+<br><br>
+
+Além disso tivemos que pelo teste t, apenas a variável $x2$ é significativa para explicar a resposta, sendo a um $\alpha < 0.001$, quanto ao $R^2$ tivemos 0.7395 e o ajustado 0.6816, assim começando a ser um $R^2$ interessante, explicando quase $70%$ da resposta.
 
 <br>
+<br>
 
-Enquanto o F tabelado, $F_{p-1,n-p} = 4.2564$
-
-Assim, rejeitamos $H_0$.
-
-```{r}
-qf(.95, 2, 9)
-```
 
 (e) Teste as hipóteses $H_0: \beta_j$ versus $H_a: \beta_j \not = 0, j = 1,2$.
 
+O teste global foi realizado no exercício anterior no qual foi visto que o modelo é significativo, já olhando para as variáveis independentes temos,
 ```{r}
 summary(aov(dados$y ~ dados$x1 + dados$x2))
 ```
+Assim x2 é significativa a um nível $\alpha < 0.001$ e x1 não é significativo mesmo considerando $\alpha = 0.1$.
 
 <br><br>
 
@@ -394,7 +396,7 @@ Temos que o $R^2=0.9965$ e o ajustado $0.9955$, assim o modelo conseguindo expli
 ```{r}
 summary(fit)
 ```
-$\beta_1$ foi significativo, tento $t_0 = -3.725$ e um $p=0.0074$, assim usando um $\alpha = 0.05$ rejeitamos $H_0$, portanto $\beta_1 \not = 0$
+$\beta_1$ foi significativo, tendo $t_0 = -3.725$ e um $p=0.0074$, para $\beta_2$ tivemos $p=2.75e^{-6}$, assim usando um $\alpha = 0.05$ rejeitamos $H_0$, portanto tanto $\beta_1 \not = 0$ quanto $\beta_2 \not = 0$.
 
 <br><br>
 
@@ -890,26 +892,166 @@ Prod&Prec&Var&Fert\\
 
 (a) Ajuste um modelo aos dados, considerando todas regressões possíveis (ver Exemplo disponível na página 33 no Material Didático de Giolo (Apostila-2007) - Análise de Regressão Linear Múltipla. Utilize todos os critérios para a comparação dos modelos;
 
+Como no exemplo, todas regressões com intercepto e sem interação, temos $2^3=8$ regressões, criando a tabela das regressões e suas estatísticas temos, 
 ```{r}
 prod  <- c(15.6,16.2,17.1,16.7,15.1,17.1,18.3,17.2,17.4,18.4,19.7,17.6,14.8,13.8,14.5,14.4,15.2,14.8,15.1,16,16.2,16.8,17.6,18.6)
 
 prec  <- c(rep(c(14.4,13.2,14.8,13.6,14,12.8), 4))
 
-VAR   <- sort(rep(1:4, 6))
+VAR   <- as.factor(sort(rep(1:4, 6)))
 
-fert  <- rep(c(1,1,2,2,3,3), 4)
+fert  <- as.factor(rep(c(1,1,2,2,3,3), 4))
 
 dados <- data.frame(prod = prod,
            prec = prec,
-           var  = VAR,
+           VAR  = VAR,
            fert = fert)
 
-```
+fit0 <- lm(dados$prod ~ 1)
 
+fit1 <- lm(prod ~ prec, data = dados)
+fit2 <- lm(prod ~ VAR, data = dados)
+fit3 <- lm(prod ~ fert, data = dados)
+
+fit4 <- lm(prod ~ prec + VAR, data = dados)
+fit5 <- lm(prod ~ prec + fert, data = dados)
+fit6 <- lm(prod ~ VAR  + fert, data = dados)
+
+fit7 <- lm(prod ~ prec + VAR + fert, data = dados)
+
+n_reg   <- c('Nenhuma', rep(1, 3), rep(2, 3), 3)
+parametros <- c(1, as.numeric(n_reg[-1]) + 1)
+var_reg <- c('Nenhuma', 'X1', 'X2', 'X3',
+             'X1 X2', 'X1 X3', 'X2 X3',
+             'X1 X2 X3')
+
+
+ssq <- function(x){ anova(x)[2]['Residuals',]}
+ssqs <- c(ssq(fit0),  ssq(fit1), ssq(fit2),  ssq(fit3),
+          ssq(fit4),  ssq(fit5), ssq(fit6),  ssq(fit7))
+
+r2 <- function(x){ return(summary(x)$r.squared)}
+raj<- function(x){ summary(x)$adj.r.squared }
+rdois <- c(r2(fit0), r2(fit1), r2(fit2), r2(fit3),
+         r2(fit4), r2(fit5), r2(fit6), r2(fit7))
+
+rajustado <- c(raj(fit0), raj(fit1), raj(fit2), raj(fit3),raj(fit4), raj(fit5), raj(fit6), raj(fit7))
+
+qme <- function(x){ anova(x)[3]['Residuals',]}
+qmes <- c(qme(fit0),  qme(fit1), qme(fit2),  qme(fit3), qme(fit4), qme(fit5), qme(fit6),  qme(fit7))
+
+sigma <- function(x){summary(x)$sigma}
+
+sigmas <- c(sigma(fit0),  sigma(fit1), sigma(fit2),  sigma(fit3), sigma(fit4), sigma(fit5), sigma(fit6),  sigma(fit7))
+
+Cp <- ssqs/(sigmas^2) - length(prod) +2*parametros
+
+est <- data.frame(n_regressoras = n_reg,
+                  n_parametros  = parametros,
+                  regressoras   = var_reg,
+                  SQres         = ssqs,
+                  R2            = rdois,
+                  R_ajust       = rajustado,
+                  QMres         = qmes,
+                  Cp            = Cp
+                  )
+est
+```
+Olhando pelo $SQres$ pelo $\bar R^2$ ajustado, tivemos 3 modelos superiores aos outros, com $X_2$, com $X_1$ e $X_2$ e com $X_1, X_2 \text{ e } X_3$.
+
+<br><br>
 
 (b) Ajuste um modelo, selecionando as variáveis significantes, que explique a produção de trigo, utilizando cada um dos métodos vistos (backward, forward e stepwise);
 
+```{r}
+library(MASS)
+library(car)
+intecepto <- lm(prod ~ 1)
+completo  <- lm(prod ~ prec + VAR + fert, data= dados)
+forward   <- step(intecepto, direction='forward', scope=formula(completo), trace=0)
+backward  <- step(completo, direction='backward', scope=formula(completo), trace=0)
+aic       <- stepAIC(completo, direction = 'backward')
+
+```
+Usando o step com direction='forward', com direction='backward' e também pelo stepAIC obtivemos o mesmo modelo $\text{prod} \sim \text{var} +  \text{fert}$, com AIC=21.39 e equação $Y = 15.7500 + 0.5625\cdot\text{fert2} + 1.0875\cdot\text{fert3} + 1.8 \cdot\text{var2} -1.7167\cdot\text{var3} + 0.4167\cdot\text{var4}$.
+
+```{r}
+summary(aic)
+```
+Olhando o modelo final tivemos que o intercepto, $var_2$, $var_3$ e $fert_3$ foram significativos a um $\alpha = 0.05$ e olhando para o F, o modelo foi significativo, com $R^2 = 0.7836$ quanto ao ajustado $0.7235$, sendo aceitável. <br><br>
+
+
 (c) Qual ajuste é melhor? Por que?
+
+$Y \sim \text{var} + \text{fert}$
+
+Além de possuir menor AIC, possui maior $\bar R^2$ ajustado e também possui apenas duas variáveis explicativos, fora isso o modelo segue todos pressupostos mesmo sem transformação nos dados.
+<br><br>
+
+
+
+#### **Testando os pressupostos**
+
+<br><br>
+
+**Normalidade dos resíduos** <br>
+
+Para isso, será usado o teste de Shapiro-Wilk, que possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \textrm{Os dados seguem uma distribuição normal.}\\
+H_{1}: \textrm{Os dados não se distribuem como uma normal.}
+    \end{cases}
+$$
+<br>
+```{r}
+shapiro.test(aic$residuals)
+```
+Assim, utilizando 95% de confiança, não rejeitamos $H_0$, temos que os resíduos seguem uma distribuição normal.
+<br><br>
+
+**Homocedastidade**
+
+Para isso, o teste de Goldfeld-Quandt será usado, o qual possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \textrm{A homocedasticidade está presente.}\\
+H_{1}: \textrm{A homocedasticidade não está presente.}
+    \end{cases}
+$$
+
+```{r}
+library(lmtest)
+
+gqtest(aic)
+```
+Usando 95% de confiança não rejeitamos $H_0$, ou seja, a homocedasticidade está presente nas variáveis independentes.
+<br><br>
+
+**Resíduos independentes e não correlacionados**<br>
+<br>
+
+
+Para testar se existe de fato não correlação será usado o teste de Durbin-Watson, que possui as seguintes hipóteses,
+
+$$
+    \begin{cases}
+H_{0}: \rho = 0,    &&\textrm{Existe independência}\\
+H_{1}: \rho \not= 0,&&\textrm{Não existe independência}
+    \end{cases}
+$$
+
+```{r}
+library(car)
+durbinWatsonTest(aic)
+```
+<br>
+Assim, usando 95% de confiança, não rejeitamos $H_0$, ou seja, existe independência nos resíduos.
+<br><br>
+
+Assim, todos pressupostos foram aceitos o modelo sendo válido.
 
 <br><br>
 
